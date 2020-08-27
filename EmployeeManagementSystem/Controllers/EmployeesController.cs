@@ -11,16 +11,19 @@ namespace EmployeeManagementSystem.Controllers
     public class EmployeesController : Controller
     {
         private readonly IEmployee _employee;
+        private readonly IDepartment _department;
         
 
-        public EmployeesController(IEmployee employee)
+        public EmployeesController(IEmployee employee,IDepartment department)
         {
             _employee = employee;
+            _department = department;
         }
 
         // GET: Employees
         public IActionResult Index()
         {
+            ViewData["DeptName"] = new SelectList(_department.getDepartments(), "DepartmentId", "Name");
             return View(_employee.getEmployees());
         }
 
@@ -28,6 +31,7 @@ namespace EmployeeManagementSystem.Controllers
         // GET: Employees/Create
         public IActionResult Create()
         {
+            ViewData["DeptName"] = new SelectList(_department.getDepartments(), "DepartmentId", "Name");
             return View();
         }
 
@@ -45,6 +49,7 @@ namespace EmployeeManagementSystem.Controllers
         // GET: Employees/Edit/5
         public IActionResult Edit(int id)
         {
+            ViewData["DeptName"] = new SelectList(_department.getDepartments(), "DepartmentId", "Name");
             Employee employee = _employee.getEmployeeById(id);
             return View(employee);
         }

@@ -40,14 +40,14 @@ namespace EmployeeManagementSystem.Models
 
         public void UpdateEmployee(Employee employee)
         {
-            Employee employee1 = employees.Find(x => x.Id == employee.Id);
-            employee1.Id = employee.Id;
-            employee1.Name = employee.Name;
-            employee1.Surname = employee.Surname;
-            employee1.Address = employee.Address;
-            employee1.Qualification = employee.Qualification;
-            employee1.Contact_Number = employee.Contact_Number;
-            employee1.DepartmentId = employee.DepartmentId;
+            Employee updateEmployee = employees.Find(x => x.Id == employee.Id);
+            updateEmployee.Id = employee.Id;
+            updateEmployee.Name = employee.Name;
+            updateEmployee.Surname = employee.Surname;
+            updateEmployee.Address = employee.Address;
+            updateEmployee.Qualification = employee.Qualification;
+            updateEmployee.Contact_Number = employee.Contact_Number;
+            updateEmployee.DepartmentId = employee.DepartmentId;
         }
     }
 }

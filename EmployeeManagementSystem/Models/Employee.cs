@@ -21,11 +21,15 @@ namespace EmployeeManagementSystem.Models
         [StringLength(100)]
         [Required]
         public string Address { get; set; }
+
+        [Required]
         public string Qualification { get; set; }
 
         [RegularExpression("([1-9]{1}[0-9]{9})", ErrorMessage = "Enter only numeric number")]
         [Required]
         public long Contact_Number { get; set; }
+
+        [Required]
         public int DepartmentId { get; set; }
         public Department department { get; set; }
     }

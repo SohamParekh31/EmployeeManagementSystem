@@ -31,9 +31,9 @@ namespace EmployeeManagementSystem.Models
 
         public void UpdateDepartment(Department department)
         {
-            Department department1 = dept.Find(x => x.DepartmentId == department.DepartmentId);
-            department1.DepartmentId = department.DepartmentId;
-            department1.Name = department.Name;
+            Department updateDepartment = dept.Find(x => x.DepartmentId == department.DepartmentId);
+            updateDepartment.DepartmentId = department.DepartmentId;
+            updateDepartment.Name = department.Name;
         }
         public void DeleteDepartment(int id)
         {
