@@ -15,7 +15,5 @@ namespace EmployeeManagementSystem.Models
         [StringLength(20)]
         [Required]
         public string Name { get; set; }
-
-        public List<Employee> Employees { get; set; }
     }
 }

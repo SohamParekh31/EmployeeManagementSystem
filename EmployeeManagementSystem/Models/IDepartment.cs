@@ -10,7 +10,7 @@ namespace EmployeeManagementSystem.Models
         public List<Department> getDepartments();
         Department getDepartmentById(int id);
         void InsertDepartment(Department department);
-        void UpdateDepartment(Department department);
+        void UpdateDepartment(int id,Department department);
         void DeleteDepartment(int id);
     }
 }

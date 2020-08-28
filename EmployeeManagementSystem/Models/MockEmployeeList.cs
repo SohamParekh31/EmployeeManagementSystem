@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Models
 {
-    public class EmployeeList : IEmployee
+    public class MockEmployeeList : IEmployee
     {
         static List<Employee> employees = null;
-        static EmployeeList()
+        static MockEmployeeList()
         {
             employees = new List<Employee>()
             {

@@ -20,8 +20,8 @@ namespace EmployeeManagementSystem
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddScoped<IDepartment,DepartmentList>();
-            services.AddScoped<IEmployee,EmployeeList>();
+            services.AddScoped<IDepartment,MockDepartmentList>();
+            services.AddScoped<IEmployee,MockEmployeeList>();
 
         }
 

@@ -45,19 +45,12 @@ namespace EmployeeManagementSystem.Controllers
             return View(department);
         }
 
-        //POST: Departments/Edit/5
+        ////POST: Departments/Edit/5
         [HttpPost]
-        public IActionResult Edit(int id,Department department)
+        public IActionResult Edit(int id, Department department)
         {
-            try
-            {
-                _dept.UpdateDepartment(department);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            _dept.UpdateDepartment(id,department);
+            return RedirectToAction("Index");
         }
 
         // GET: Departments/Delete/5
@@ -67,7 +60,7 @@ namespace EmployeeManagementSystem.Controllers
             return View(department);
         }
 
-        //// POST: Departments/Delete/5
+        ////// POST: Departments/Delete/5
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
