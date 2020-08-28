@@ -8,6 +8,11 @@ namespace EmployeeManagementSystem.Models
     public class DepartmentList : IDepartment
     {
         static List<Department> dept = null;
+        static IEmployee _employee;
+        public DepartmentList(IEmployee employee)
+        {
+            _employee = employee;
+        }
         static DepartmentList()
         {
              dept = new List<Department>()
@@ -34,11 +39,21 @@ namespace EmployeeManagementSystem.Models
             Department updateDepartment = dept.Find(x => x.DepartmentId == department.DepartmentId);
             updateDepartment.DepartmentId = department.DepartmentId;
             updateDepartment.Name = department.Name;
+            foreach (var item in _employee.getEmployees().ToList())
+            {
+                if (item.department.DepartmentId == department.DepartmentId)
+                    item.department.Name = department.Name;
+            }
         }
         public void DeleteDepartment(int id)
         {
             Department department = dept.Find(x => x.DepartmentId == id);
             dept.Remove(department);
+            foreach (var item in _employee.getEmployees().ToList())
+            {
+                if (item.department.DepartmentId == id)
+                    _employee.getEmployees().Remove(item);
+            }
         }
 
         public Department getDepartmentById(int id)
