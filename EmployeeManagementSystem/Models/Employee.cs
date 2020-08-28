@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,12 +26,13 @@ namespace EmployeeManagementSystem.Models
         [Required]
         public string Qualification { get; set; }
 
-        [RegularExpression("([1-9]{1}[0-9]{9})", ErrorMessage = "Enter only numeric number")]
+        [DisplayName("Contact Number")]
+        [RegularExpression("([1-9]{1}[0-9]{9})", ErrorMessage = "Enter only numeric number with 10 digits")]
         [Required]
         public long Contact_Number { get; set; }
 
-        [Required]
-        public int DepartmentId { get; set; }
+        //[Required]
+        //public int DepartmentId { get; set; }
         public Department department { get; set; }
     }
 }

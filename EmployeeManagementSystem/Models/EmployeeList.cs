@@ -12,7 +12,7 @@ namespace EmployeeManagementSystem.Models
         {
             employees = new List<Employee>()
             {
-                new Employee(){Id = 1,Name = "Soham",Surname = "Parekh",Address = "Shree Vallabh App,Jamnagar",Qualification="CE",Contact_Number=9879020500,DepartmentId = 2}
+               // new Employee(){Id = 1,Name = "Soham",Surname = "Parekh",Address = "Shree Vallabh App,Jamnagar",Qualification="CE",Contact_Number=9879020500,DepartmentId = 2}
             };
         }
         public void DeleteEmployee(int id)
@@ -31,11 +31,11 @@ namespace EmployeeManagementSystem.Models
             return employees;
         }
 
-        public void InsertEmployee(Employee employee)
+        public List<Employee> InsertEmployee(Employee employee)
         {
-            employee.Id = employees.Max(m => m.Id);
-            employee.Id += 1;
+            
             employees.Add(employee);
+            return employees;
         }
 
         public void UpdateEmployee(Employee employee)
@@ -47,7 +47,7 @@ namespace EmployeeManagementSystem.Models
             updateEmployee.Address = employee.Address;
             updateEmployee.Qualification = employee.Qualification;
             updateEmployee.Contact_Number = employee.Contact_Number;
-            updateEmployee.DepartmentId = employee.DepartmentId;
+            updateEmployee.department = employee.department;
         }
     }
 }

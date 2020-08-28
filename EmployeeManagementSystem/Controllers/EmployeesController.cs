@@ -31,7 +31,7 @@ namespace EmployeeManagementSystem.Controllers
         // GET: Employees/Create
         public IActionResult Create()
         {
-            ViewData["DeptName"] = new SelectList(_department.getDepartments(), "DepartmentId", "Name");
+            ViewBag.DeptName = _department.getDepartments();
             return View();
         }
 
@@ -39,11 +39,17 @@ namespace EmployeeManagementSystem.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Create( Employee employee)
         {
-            _employee.InsertEmployee(employee);
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                var Department = (_department.getDepartments()).Find(x => x.Name == employee.department.Name);
+                employee.Id = ((_employee.getEmployees()).Count + 1);
+                employee.department = Department;
+                var result = _employee.InsertEmployee(employee);
+                return View("Index", result);
+            }
+            return View();
         }
 
         // GET: Employees/Edit/5
@@ -55,8 +61,6 @@ namespace EmployeeManagementSystem.Controllers
         }
 
         // POST: Employees/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Employee employee)
