@@ -10,9 +10,8 @@ namespace EmployeeManagementSystem.Models
     {
         SqlConnection con;
         private List<Department> dept = new List<Department>();
-        private IEmployee _employee;
         private Department departments;
-        public MockDepartmentList(IEmployee employee)
+        public MockDepartmentList()
         {
             string cs = "data source=.; database = EmployeeManagementSystem; integrated security=SSPI";
             con = new SqlConnection(cs);
@@ -26,7 +25,6 @@ namespace EmployeeManagementSystem.Models
                 departments.Name = reader[1].ToString();
                 dept.Add(departments);
             }
-            _employee = employee;
             con.Close();
         }
         //static MockDepartmentList()
@@ -56,14 +54,14 @@ namespace EmployeeManagementSystem.Models
         {
             con.Open();
             // Insert query  
-            string query = "INSERT INTO Departments(Id,Name) VALUES(@Id, @Name)";
+            string query = "INSERT INTO Departments(DepartmentId,Name) VALUES(@DepartmentId, @Name)";
             SqlCommand cmd = new SqlCommand(query, con);
             
             departments = new Department();
                 // Passing parameter values  
             department.DepartmentId = dept.Max(x => x.DepartmentId)+1;
 
-            cmd.Parameters.AddWithValue("@Id", department.DepartmentId);
+            cmd.Parameters.AddWithValue("@DepartmentId", department.DepartmentId);
             cmd.Parameters.AddWithValue("@Name", department.Name);
             cmd.ExecuteNonQuery();
             //dept.Add(department);
@@ -72,7 +70,7 @@ namespace EmployeeManagementSystem.Models
         public void UpdateDepartment(int id,Department department)
         {
             con.Open();
-            string query = "UPDATE Departments SET Name = '"+department.Name+"' WHERE Id = " + id;
+            string query = "UPDATE Departments SET Name = '"+department.Name+ "' WHERE DepartmentId = " + id;
             SqlCommand cmd = new SqlCommand(query, con);
             cmd.ExecuteNonQuery();
             con.Close();
@@ -88,7 +86,7 @@ namespace EmployeeManagementSystem.Models
         public void DeleteDepartment(int id)
         {
             con.Open();
-            string query = "DELETE FROM Departments WHERE Id = "+ id;
+            string query = "DELETE FROM Departments WHERE DepartmentId = " + id;
             SqlCommand cmd = new SqlCommand(query, con);
             cmd.ExecuteNonQuery();
             con.Close();

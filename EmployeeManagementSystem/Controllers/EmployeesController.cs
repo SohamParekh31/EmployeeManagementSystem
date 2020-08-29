@@ -36,26 +36,26 @@ namespace EmployeeManagementSystem.Controllers
         }
 
         // POST: Employees/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         public IActionResult Create( Employee employee)
         {
-            if (ModelState.IsValid)
-            {
-                var Department = (_department.getDepartments()).Find(x => x.Name == employee.department.Name);
-                employee.Id = ((_employee.getEmployees()).Count + 1);
-                employee.department = Department;
-                var result = _employee.InsertEmployee(employee);
-                return View("Index", result);
-            }
-            return View();
+            _employee.InsertEmployee(employee);
+            return RedirectToAction("Index");
+            //if (ModelState.IsValid)
+            //{
+            //    var Department = (_department.getDepartments()).Find(x => x.Name == employee.department.Name);
+            //    employee.Id = ((_employee.getEmployees()).Count + 1);
+            //    employee.department = Department;
+            //    var result = _employee.InsertEmployee(employee);
+            //    return View("Index", result);
+            //}
+
         }
 
         // GET: Employees/Edit/5
         public IActionResult Edit(int id)
         {
-            ViewData["DeptName"] = new SelectList(_department.getDepartments(), "DepartmentId", "Name");
+            ViewBag.DeptName = _department.getDepartments();
             Employee employee = _employee.getEmployeeById(id);
             return View(employee);
         }
@@ -67,7 +67,7 @@ namespace EmployeeManagementSystem.Controllers
         {
             try
             {
-                _employee.UpdateEmployee(employee);
+                _employee.UpdateEmployee(id,employee);
                 return RedirectToAction("Index");
             }
             catch
