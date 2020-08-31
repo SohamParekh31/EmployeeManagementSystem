@@ -27,7 +27,7 @@ namespace EmployeeManagementSystem.Models
         public string Qualification { get; set; }
 
         [DisplayName("Contact Number")]
-        //[RegularExpression("([1-9]{1}[0-9]{9})", ErrorMessage = "Enter only numeric number with 10 digits")]
+        [RegularExpression("([1-9]{1}[0-9]{9})", ErrorMessage = "Enter only numeric number with 10 digits")]
         [Required]
         public long Contact_Number { get; set; }
 
