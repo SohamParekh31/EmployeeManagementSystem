@@ -13,7 +13,7 @@ namespace EmployeeManagementSystem.Models
         private Department departments;
         public MockDepartmentList()
         {
-            string cs = "data source=.; database = EmployeeManagementSystem; integrated security=SSPI";
+            string cs = "data source=SOHAM; database = EmployeeManagementSystem; integrated security=SSPI";
             con = new SqlConnection(cs);
             con.Open();
             SqlCommand cmd = new SqlCommand("select * from Departments", con);
@@ -86,8 +86,13 @@ namespace EmployeeManagementSystem.Models
         public void DeleteDepartment(int id)
         {
             con.Open();
-            string query = "DELETE FROM Departments WHERE DepartmentId = " + id;
-            SqlCommand cmd = new SqlCommand(query, con);
+            string query;
+            SqlCommand cmd;
+            query = "DELETE FROM Departments WHERE DepartmentId = " + id;
+            cmd = new SqlCommand(query, con);
+            cmd.ExecuteNonQuery();
+            query = "DELETE FROM Employees WHERE DepartmentId = " + id;
+            cmd = new SqlCommand(query, con);
             cmd.ExecuteNonQuery();
             con.Close();
             //Department department = dept.Find(x => x.DepartmentId == id);
@@ -105,3 +110,4 @@ namespace EmployeeManagementSystem.Models
         }
     }
 }
+ 

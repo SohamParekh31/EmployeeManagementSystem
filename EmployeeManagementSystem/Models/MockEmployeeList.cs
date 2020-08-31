@@ -13,10 +13,10 @@ namespace EmployeeManagementSystem.Models
         private Employee employees;
         public MockEmployeeList()
         {
-            string cs = "data source=.; database = EmployeeManagementSystem; integrated security=SSPI";
+            string cs = "data source=SOHAM; database = EmployeeManagementSystem; integrated security=SSPI";
             con = new SqlConnection(cs);
             con.Open();
-            SqlCommand cmd = new SqlCommand("select * from Employees inner join  Departments on Employees.DepartmentId = Departments.DepartmentId", con);
+            SqlCommand cmd = new SqlCommand("select * from Employees inner join Departments on Employees.DepartmentId = Departments.DepartmentId", con);
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -77,8 +77,6 @@ namespace EmployeeManagementSystem.Models
             cmd.ExecuteNonQuery();
             //dept.Add(department);
             con.Close();
-            //employees.Add(employee);
-            //return employees;
         }
 
         public void UpdateEmployee(int id,Employee employee)
