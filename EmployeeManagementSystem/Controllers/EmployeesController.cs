@@ -41,14 +41,6 @@ namespace EmployeeManagementSystem.Controllers
         {
             _employee.InsertEmployee(employee);
             return RedirectToAction("Index");
-            //if (ModelState.IsValid)
-            //{
-            //    var Department = (_department.getDepartments()).Find(x => x.Name == employee.department.Name);
-            //    employee.Id = ((_employee.getEmployees()).Count + 1);
-            //    employee.department = Department;
-            //    var result = _employee.InsertEmployee(employee);
-            //    return View("Index", result);
-            //}
 
         }
 
