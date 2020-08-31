@@ -39,17 +39,15 @@ namespace EmployeeManagementSystem.Controllers
         [HttpPost]
         public IActionResult Create( Employee employee)
         {
-            _employee.InsertEmployee(employee);
-            return RedirectToAction("Index");
-            //if (ModelState.IsValid)
-            //{
-            //    var Department = (_department.getDepartments()).Find(x => x.Name == employee.department.Name);
-            //    employee.Id = ((_employee.getEmployees()).Count + 1);
-            //    employee.department = Department;
-            //    var result = _employee.InsertEmployee(employee);
-            //    return View("Index", result);
-            //}
-
+            if (ModelState.IsValid)
+            {
+                var Department = (_department.getDepartments()).Find(x => x.Name == employee.department.Name);
+                employee.Id = ((_employee.getEmployees()).Count + 1);
+                employee.department = Department;
+                var result = _employee.InsertEmployee(employee);
+                return View("Index", result);
+            }
+            return View();
         }
 
         // GET: Employees/Edit/5
