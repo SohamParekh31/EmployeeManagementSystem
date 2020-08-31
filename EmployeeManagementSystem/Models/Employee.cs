@@ -33,6 +33,7 @@ namespace EmployeeManagementSystem.Models
 
         [Required]
         public int DepartmentId { get; set; }
+        public string DeptName { get; set; }
         public Department department { get; set; }
     }
 }

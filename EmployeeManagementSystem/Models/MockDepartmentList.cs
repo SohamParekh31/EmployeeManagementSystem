@@ -10,13 +10,11 @@ namespace EmployeeManagementSystem.Models
     public class MockDepartmentList : IDepartment
     {
         SqlConnection con;
-        private List<Department> dept = new List<Department>();
         public MockDepartmentList()
         {
             string cs = "data source=SOHAM; database = EmployeeManagementSystem; integrated security=SSPI";
             con = new SqlConnection(cs);
             con.Open();
-            
         }
         
         public List<Department> getDepartments()
@@ -27,17 +25,16 @@ namespace EmployeeManagementSystem.Models
         {
             List<Department> getMaxIdofDepartment = con.Query<Department>("select * from Departments").ToList();
             department.DepartmentId= getMaxIdofDepartment.Max(e => e.DepartmentId) + 1;
-            string query = "INSERT INTO Departments(DepartmentId,Name) VALUES(@DepartmentId, @Name)";
+            string query = "INSERT INTO Departments(DepartmentId,DeptName) VALUES(@DepartmentId, @Name)";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@DepartmentId", department.DepartmentId);
-            parameters.Add("@Name", department.Name);
+            parameters.Add("@Name", department.DeptName);
             con.Execute(query, parameters);
             con.Close();
         }
         public void UpdateDepartment(int id,Department department)
         {
-            //con.Open();
-            string query = "UPDATE Departments SET Name = '"+department.Name+ "' WHERE DepartmentId = " + id;
+            string query = "UPDATE Departments SET DeptName = '" + department.DeptName + "' WHERE DepartmentId = " + id;
             con.Execute(query);
             con.Close();
         }
@@ -50,7 +47,8 @@ namespace EmployeeManagementSystem.Models
 
         public Department getDepartmentById(int id)
         {
-            return dept.Find(m => m.DepartmentId == id); 
+            List<Department> getMaxIdofDepartment = con.Query<Department>("select * from Departments").ToList();
+            return getMaxIdofDepartment.Find(m => m.DepartmentId == id); 
         }
     }
 }

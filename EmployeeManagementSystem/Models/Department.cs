@@ -14,6 +14,6 @@ namespace EmployeeManagementSystem.Models
         [DisplayName("Department Name")]
         [StringLength(20)]
         [Required]
-        public string Name { get; set; }
+        public string DeptName { get; set; }
     }
 }
