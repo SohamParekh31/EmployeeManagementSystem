@@ -116,11 +116,12 @@ D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\obj\Debug\netcoreapp
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\obj\Debug\netcoreapp3.1\Razor\Views\Employees\Delete.cshtml.g.cs
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\obj\Debug\netcoreapp3.1\Razor\Views\Employees\Edit.cshtml.g.cs
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\obj\Debug\netcoreapp3.1\Razor\Views\Employees\Index.cshtml.g.cs
-D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\obj\Debug\netcoreapp3.1\EmployeeManagementSystem.csproj.CoreCompileInputs.cache
-D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\obj\Debug\netcoreapp3.1\EmployeeManagementSystem.MvcApplicationPartsAssemblyInfo.cache
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\bin\Debug\netcoreapp3.1\System.Data.SqlClient.dll
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\sni.dll
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\sni.dll
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\sni.dll
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\bin\Debug\netcoreapp3.1\Dapper.dll
+D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\obj\Debug\netcoreapp3.1\EmployeeManagementSystem.csproj.CoreCompileInputs.cache
+D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\obj\Debug\netcoreapp3.1\EmployeeManagementSystem.MvcApplicationPartsAssemblyInfo.cache
