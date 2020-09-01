@@ -23,11 +23,8 @@ namespace EmployeeManagementSystem.Models
         }
         public void InsertDepartment(Department department)
         {
-            List<Department> getMaxIdofDepartment = con.Query<Department>("select * from Departments").ToList();
-            department.DepartmentId= getMaxIdofDepartment.Max(e => e.DepartmentId) + 1;
-            string query = "INSERT INTO Departments(DepartmentId,DeptName) VALUES(@DepartmentId, @Name)";
+            string query = "INSERT INTO Departments(DeptName) VALUES(@Name)";
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@DepartmentId", department.DepartmentId);
             parameters.Add("@Name", department.DeptName);
             con.Execute(query, parameters);
             con.Close();
