@@ -16,7 +16,6 @@ namespace EmployeeManagementSystem.Models
         }
         public void DeleteEmployee(int id)
         {
-            _context.employees.Include(e => e.department).ToList();
             var employee = _context.employees.Find(id);
             _context.employees.Remove(employee);
             _context.SaveChanges();
