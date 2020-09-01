@@ -37,22 +37,22 @@ namespace EmployeeManagementSystem.Models
         {
             con.Open();
             // Insert query  
-            string query = "INSERT INTO Departments(DepartmentId,Name) VALUES(@DepartmentId, @Name)";
+            string query = "INSERT INTO Departments(DeptName) VALUES(@DeptName)";
             SqlCommand cmd = new SqlCommand(query, con);
             
             departments = new Department();
                 // Passing parameter values  
-            department.DepartmentId = dept.Max(x => x.DepartmentId)+1;
+           // department.DepartmentId = dept.Max(x => x.DepartmentId)+1;
 
-            cmd.Parameters.AddWithValue("@DepartmentId", department.DepartmentId);
-            cmd.Parameters.AddWithValue("@Name", department.Name);
+            //cmd.Parameters.AddWithValue("@DepartmentId", department.DepartmentId);
+            cmd.Parameters.AddWithValue("@DeptName", department.Name);
             cmd.ExecuteNonQuery();
             con.Close();
         }
         public void UpdateDepartment(int id,Department department)
         {
             con.Open();
-            string query = "UPDATE Departments SET Name = '"+department.Name+ "' WHERE DepartmentId = " + id;
+            string query = "UPDATE Departments SET DeptName = '" + department.Name+ "' WHERE DepartmentId = " + id;
             SqlCommand cmd = new SqlCommand(query, con);
             cmd.ExecuteNonQuery();
             con.Close();
