@@ -23,7 +23,6 @@ namespace EmployeeManagementSystem.Controllers
         // GET: Employees
         public IActionResult Index()
         {
-            ViewData["DeptName"] = new SelectList(_department.getDepartments(), "DepartmentId", "Name");
             return View(_employee.getEmployees());
         }
 
@@ -41,11 +40,8 @@ namespace EmployeeManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var Department = (_department.getDepartments()).Find(x => x.Name == employee.department.Name);
-                employee.Id = ((_employee.getEmployees()).Count + 1);
-                employee.department = Department;
-                var result = _employee.InsertEmployee(employee);
-                return View("Index", result);
+                _employee.InsertEmployee(employee);
+                return RedirectToAction(nameof(Index));
             }
             return View();
         }
