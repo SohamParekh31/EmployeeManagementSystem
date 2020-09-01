@@ -42,8 +42,6 @@ namespace EmployeeManagementSystem.Models
             SqlCommand cmd = new SqlCommand(query, con);
             cmd.ExecuteNonQuery();
             con.Close();
-            //Employee employee = employees.Find(x => x.Id == id);
-            //employees.Remove(employee);
         }
 
         public Employee getEmployeeById(int id)
@@ -75,7 +73,6 @@ namespace EmployeeManagementSystem.Models
             cmd.Parameters.AddWithValue("@Contact_number", employee.Contact_Number);
             cmd.Parameters.AddWithValue("@DepartmentId", employee.DepartmentId);
             cmd.ExecuteNonQuery();
-            //dept.Add(department);
             con.Close();
         }
 
@@ -86,14 +83,6 @@ namespace EmployeeManagementSystem.Models
             SqlCommand cmd = new SqlCommand(query, con);
             cmd.ExecuteNonQuery();
             con.Close();
-            //Employee updateEmployee = emp.Find(x => x.Id == employee.Id);
-            //updateEmployee.Id = employee.Id;
-            //updateEmployee.Name = employee.Name;
-            //updateEmployee.Surname = employee.Surname;
-            //updateEmployee.Address = employee.Address;
-            //updateEmployee.Qualification = employee.Qualification;
-            //updateEmployee.Contact_Number = employee.Contact_Number;
-            //updateEmployee.department = employee.department;
         }
     }
 }
