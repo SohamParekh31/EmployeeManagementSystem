@@ -35,9 +35,9 @@ namespace EmployeeManagementSystem.Controllers
                 var user = userManager.GetUserAsync(HttpContext.User).Result;
                 var emp = _employee.getEmployees().ToList();
                 var employee = emp.Find(e => e.Name == user.UserName);
-                var e = emp.Where(e => e.DepartmentId == employee.DepartmentId);
+                var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
                 //var res = user.UserName;
-                return View(e);
+                return View(employeeList);
             }
             return View(_employee.getEmployees());
         }

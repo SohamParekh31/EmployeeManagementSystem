@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using EmployeeManagementSystem.ViewModel;
 using Microsoft.AspNetCore.Authorization;
@@ -102,6 +103,7 @@ namespace EmployeeManagementSystem.Controllers
                 if (loggedInUser != null)
                     return RedirectToAction("ForgetPassword", new RouteValueDictionary(
                                                 new { controller = "Account", action = "ForgetPassword", Id = loggedInUser.Id }));
+                ViewBag.Message = "User Not Found";
             }
             return View();
         }
@@ -110,9 +112,11 @@ namespace EmployeeManagementSystem.Controllers
         public async Task<IActionResult> ForgetPassword(string id)
         {
             var user = await userManager.FindByIdAsync(id);
+            var token = userManager.GeneratePasswordResetTokenAsync(user).Result;
             var forgetresetpassword = new ForgetResetPassword
             {
-                id = user.Id
+                id = user.Id,
+                Token = token
             };
             return View(forgetresetpassword);
         }
@@ -123,11 +127,17 @@ namespace EmployeeManagementSystem.Controllers
             if (ModelState.IsValid)
             {
                 var user = await userManager.FindByIdAsync(model.id);
-                var changePassword = await userManager.ChangePasswordAsync(user,model.OldPassword,model.Password);
+                var changePassword = await userManager.ResetPasswordAsync(user,model.Token,model.Password);
 
                 if (changePassword.Succeeded)
                 {
+                    ViewBag.Message = "Password Changed Successfully";
                     return RedirectToAction("Login", "Account");
+                }
+                ViewBag.Message = "Error while resetting the password!";
+                foreach (var item in changePassword.Errors)
+                {
+                    ModelState.AddModelError("", item.Description);
                 }
             }
             return View(model);

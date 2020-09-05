@@ -26,7 +26,7 @@ namespace EmployeeManagementSystem
             services.AddDbContext<AppDbContext>(options =>
                                  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders(); 
             services.AddControllersWithViews();
             services.AddMvc(config =>
             {
