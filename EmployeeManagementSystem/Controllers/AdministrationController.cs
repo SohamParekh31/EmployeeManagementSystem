@@ -58,10 +58,6 @@ namespace EmployeeManagementSystem.Controllers
         public async Task<IActionResult> EditRole(string id)
         {
             var role = await roleManager.FindByIdAsync(id);
-            if(role == null)
-            {
-
-            }
             var model = new EditRoleViewModel
             {
                 Id = role.Id,
@@ -69,7 +65,7 @@ namespace EmployeeManagementSystem.Controllers
             };
             foreach (var user in userManager.Users)
             {
-                if(await userManager.IsInRoleAsync(user, role.Name))
+                if (await userManager.IsInRoleAsync(user, role.Name))
                 {
                     model.Users.Add(user.UserName);
                 }
@@ -80,25 +76,18 @@ namespace EmployeeManagementSystem.Controllers
         public async Task<IActionResult> EditRole(EditRoleViewModel model)
         {
             var role = await roleManager.FindByIdAsync(model.Id);
-            if (role == null)
+            role.Name = model.RoleName;
+            var result = await roleManager.UpdateAsync(role);
+            if (result.Succeeded)
             {
-
+                return RedirectToAction("ListRoles");
             }
-            else
+
+            foreach (var errors in result.Errors)
             {
-                role.Name = model.RoleName;
-                var result = await roleManager.UpdateAsync(role);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("ListRoles");
-                }
-
-                foreach (var errors in result.Errors)
-                {
-                    ModelState.AddModelError("", errors.Description);
-                }
-                return View(model);
+                ModelState.AddModelError("", errors.Description);
             }
+
             return View(model);
         }
         [HttpGet]
@@ -125,13 +114,9 @@ namespace EmployeeManagementSystem.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> EditUsersInRole(List<UserRoleViewModel> model,string roleId)
+        public async Task<IActionResult> EditUsersInRole(List<UserRoleViewModel> model, string roleId)
         {
             var role = await roleManager.FindByIdAsync(roleId);
-            if(role == null)
-            {
-
-            }
             for (int i = 0; i < model.Count; i++)
             {
                 var user = await userManager.FindByIdAsync(model[i].UserId);

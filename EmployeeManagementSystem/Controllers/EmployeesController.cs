@@ -17,14 +17,16 @@ namespace EmployeeManagementSystem.Controllers
 
         private readonly UserManager<IdentityUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly AppDbContext context;
 
         public EmployeesController(IEmployee employee,IDepartment department, UserManager<IdentityUser> userManager
-                                    ,  RoleManager<IdentityRole> roleManager)
+                                    ,RoleManager<IdentityRole> roleManager,AppDbContext context)
         {
             _employee = employee;
             _department = department;
             this.userManager = userManager;
             this.roleManager = roleManager;
+            this.context = context;
         }
 
         // GET: Employees
@@ -36,7 +38,6 @@ namespace EmployeeManagementSystem.Controllers
                 var emp = _employee.getEmployees().ToList();
                 var employee = emp.Find(e => e.Name == user.UserName);
                 var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
-                //var res = user.UserName;
                 return View(employeeList);
             }
             return View(_employee.getEmployees());
@@ -113,9 +114,13 @@ namespace EmployeeManagementSystem.Controllers
         [HttpPost, ActionName("Delete")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _employee.DeleteEmployee(id);
+            var emp = context.employees.Find(id);
+            var userEmp = await userManager.FindByNameAsync(emp.Name);
+            await userManager.DeleteAsync(userEmp);
+            context.employees.Remove(emp);
+            context.SaveChanges();
             return RedirectToAction("Index");
         }
     }

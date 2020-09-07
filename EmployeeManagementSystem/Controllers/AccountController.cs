@@ -102,7 +102,7 @@ namespace EmployeeManagementSystem.Controllers
                 var loggedInUser = await userManager.FindByEmailAsync(model.Email);
                 if (loggedInUser != null)
                     return RedirectToAction("ForgetPassword", new RouteValueDictionary(
-                                                new { controller = "Account", action = "ForgetPassword", Id = loggedInUser.Id }));
+                                                new { controller = "Account", action = "ForgetPassword", loggedInUser.Id }));
                 ViewBag.Message = "User Not Found";
             }
             return View();
