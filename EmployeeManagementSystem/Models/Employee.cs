@@ -10,6 +10,7 @@ namespace EmployeeManagementSystem.Models
     public class Employee
     {
         public int Id { get; set; }
+        public string Email { get; set; }
 
         [StringLength(20)]
         [Required]

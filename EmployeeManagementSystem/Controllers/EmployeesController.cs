@@ -32,11 +32,12 @@ namespace EmployeeManagementSystem.Controllers
         // GET: Employees
         public IActionResult Index()
         {
+
             if (User.IsInRole("Employee")) 
             {
                 var user = userManager.GetUserAsync(HttpContext.User).Result;
                 var emp = _employee.getEmployees().ToList();
-                var employee = emp.Find(e => e.Name == user.UserName);
+                var employee = emp.Find(e => e.Email == user.Email);
                 var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
                 return View(employeeList);
             }
@@ -61,19 +62,44 @@ namespace EmployeeManagementSystem.Controllers
                 var userName = employee.Name;
                 var email = employee.Name + "@gmail.com";
                 var password = employee.Name.ToUpper() + employee.Surname + "@2020";
-                var user = new IdentityUser { UserName = userName, Email = email };
-                var result = await userManager.CreateAsync(user, password);
+                
+                var doesUserExist = await userManager.FindByEmailAsync(email);
+                if(doesUserExist != null)
+                {
+                    var emailChange = employee.Name + employee.Surname + "@gmail.com";
+                    var user = new IdentityUser { UserName = emailChange, Email = emailChange };
+                    var result = await userManager.CreateAsync(user, password);
 
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(user, "Employee");
-                    _employee.InsertEmployee(employee);
-                    return RedirectToAction(nameof(Index));
+                    if (result.Succeeded)
+                    {
+                        employee.Email = emailChange;
+                        await userManager.AddToRoleAsync(user, "Employee");
+                        _employee.InsertEmployee(employee);
+                        return RedirectToAction(nameof(Index));
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
                 }
-                foreach (var error in result.Errors)
+                else
                 {
-                    ModelState.AddModelError("", error.Description);
+                    var user = new IdentityUser { UserName = userName, Email = email };
+                    var result = await userManager.CreateAsync(user, password);
+
+                    if (result.Succeeded)
+                    {
+                        employee.Email = email;
+                        await userManager.AddToRoleAsync(user, "Employee");
+                        _employee.InsertEmployee(employee);
+                        return RedirectToAction(nameof(Index));
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
                 }
+                
             }
             return View();
         }
