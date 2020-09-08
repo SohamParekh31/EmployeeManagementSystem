@@ -143,7 +143,7 @@ namespace EmployeeManagementSystem.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var emp = context.employees.Find(id);
-            var userEmp = await userManager.FindByNameAsync(emp.Name);
+            var userEmp = await userManager.FindByEmailAsync(emp.Email);
             await userManager.DeleteAsync(userEmp);
             context.employees.Remove(emp);
             context.SaveChanges();
