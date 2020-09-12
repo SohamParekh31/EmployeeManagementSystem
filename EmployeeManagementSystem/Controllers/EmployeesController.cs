@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using EmployeeManagementSystem.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmployeeManagementSystem.Controllers
 {
@@ -12,18 +14,33 @@ namespace EmployeeManagementSystem.Controllers
     {
         private readonly IEmployee _employee;
         private readonly IDepartment _department;
-        
 
-        public EmployeesController(IEmployee employee,IDepartment department)
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly AppDbContext context;
+
+        public EmployeesController(IEmployee employee,IDepartment department, UserManager<IdentityUser> userManager
+                                    ,RoleManager<IdentityRole> roleManager,AppDbContext context)
         {
             _employee = employee;
             _department = department;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
+            this.context = context;
         }
 
         // GET: Employees
         public IActionResult Index()
         {
-            ViewData["DeptName"] = new SelectList(_department.getDepartments(), "DepartmentId", "Name");
+
+            if (User.IsInRole("Employee")) 
+            {
+                var user = userManager.GetUserAsync(HttpContext.User).Result;
+                var emp = _employee.getEmployees().ToList();
+                var employee = emp.Find(e => e.Email == user.Email);
+                var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
+                return View(employeeList);
+            }
             return View(_employee.getEmployees());
         }
 
@@ -37,15 +54,52 @@ namespace EmployeeManagementSystem.Controllers
 
         // POST: Employees/Create
         [HttpPost]
-        public IActionResult Create( Employee employee)
+        public async Task<IActionResult> Create(Employee employee)
         {
             if (ModelState.IsValid)
             {
-                var Department = (_department.getDepartments()).Find(x => x.Name == employee.department.Name);
-                employee.Id = ((_employee.getEmployees()).Count + 1);
-                employee.department = Department;
-                var result = _employee.InsertEmployee(employee);
-                return View("Index", result);
+                var role = await roleManager.RoleExistsAsync("Employee");
+                var userName = employee.Name;
+                var email = employee.Name + "@gmail.com";
+                var password = employee.Name.ToUpper() + employee.Surname + "@2020";
+                
+                var doesUserExist = await userManager.FindByEmailAsync(email);
+                if(doesUserExist != null)
+                {
+                    var emailChange = employee.Name + employee.Surname + "@gmail.com";
+                    var user = new IdentityUser { UserName = emailChange, Email = emailChange };
+                    var result = await userManager.CreateAsync(user, password);
+
+                    if (result.Succeeded)
+                    {
+                        employee.Email = emailChange;
+                        await userManager.AddToRoleAsync(user, "Employee");
+                        _employee.InsertEmployee(employee);
+                        return RedirectToAction(nameof(Index));
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+                else
+                {
+                    var user = new IdentityUser { UserName = userName, Email = email };
+                    var result = await userManager.CreateAsync(user, password);
+
+                    if (result.Succeeded)
+                    {
+                        employee.Email = email;
+                        await userManager.AddToRoleAsync(user, "Employee");
+                        _employee.InsertEmployee(employee);
+                        return RedirectToAction(nameof(Index));
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+                
             }
             return View();
         }
@@ -53,9 +107,17 @@ namespace EmployeeManagementSystem.Controllers
         // GET: Employees/Edit/5
         public IActionResult Edit(int id)
         {
-            ViewBag.DeptName = _department.getDepartments();
+            if (User.IsInRole("Employee"))
+            {
+                var user = userManager.GetUserAsync(HttpContext.User).Result;
+                ViewBag.DeptName = _department.getDepartments();
+                var emp = _employee.getEmployees().ToList();
+                Employee employe = emp.Find(e => e.Email == user.Email);
+                return View(employe);
+            }
             Employee employee = _employee.getEmployeeById(id);
             return View(employee);
+            
         }
 
         // POST: Employees/Edit/5
@@ -75,6 +137,7 @@ namespace EmployeeManagementSystem.Controllers
         }
 
         // GET: Employees/Delete/5
+        [AllowAnonymous]
         public IActionResult Delete(int id)
         {
             Employee employee = _employee.getEmployeeById(id);
@@ -83,10 +146,15 @@ namespace EmployeeManagementSystem.Controllers
 
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _employee.DeleteEmployee(id);
+            var emp = context.employees.Find(id);
+            var userEmp = await userManager.FindByEmailAsync(emp.Email);
+            await userManager.DeleteAsync(userEmp);
+            context.employees.Remove(emp);
+            context.SaveChanges();
             return RedirectToAction("Index");
         }
     }

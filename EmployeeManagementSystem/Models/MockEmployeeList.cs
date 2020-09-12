@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -8,43 +9,39 @@ namespace EmployeeManagementSystem.Models
 {
     public class MockEmployeeList : IEmployee
     {
-        static List<Employee> emp = new List<Employee>();
-       // private Employee employees;
-        public MockEmployeeList()
+        private readonly AppDbContext _context;
+        public MockEmployeeList(AppDbContext context)
         {
+            _context = context;
         }
         public void DeleteEmployee(int id)
         {
-            Employee employee = emp.Find(x => x.Id == id);
-            emp.Remove(employee);
+            var employee = _context.employees.Find(id);
+            _context.employees.Remove(employee);
+            _context.SaveChanges();
         }
 
         public Employee getEmployeeById(int id)
         {
-            return emp.Find(m => m.Id == id);
+            return _context.employees.FirstOrDefault(e => e.Id == id);
         }
 
         public List<Employee> getEmployees()
         {
-            return emp;
+            var employee = _context.employees.Include(e => e.department);
+            return employee.ToList();
         }
 
-        public Employee InsertEmployee(Employee employee)
+        public void InsertEmployee(Employee employee)
         {
-            emp.Add(employee);
-            return employee;
+            _context.Add(employee);
+            _context.SaveChanges();
         }
 
         public void UpdateEmployee(int id,Employee employee)
         {
-            Employee updateEmployee = emp.Find(x => x.Id == employee.Id);
-            updateEmployee.Id = employee.Id;
-            updateEmployee.Name = employee.Name;
-            updateEmployee.Surname = employee.Surname;
-            updateEmployee.Address = employee.Address;
-            updateEmployee.Qualification = employee.Qualification;
-            updateEmployee.Contact_Number = employee.Contact_Number;
-            updateEmployee.department = employee.department;
+            _context.Update(employee);
+            _context.SaveChanges();
         }
     }
 }

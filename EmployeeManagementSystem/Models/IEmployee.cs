@@ -9,7 +9,7 @@ namespace EmployeeManagementSystem.Models
     {
         public List<Employee> getEmployees();
         Employee getEmployeeById(int id);
-        Employee InsertEmployee(Employee employee);
+        void InsertEmployee(Employee employee);
         void UpdateEmployee(int id,Employee employee);
         void DeleteEmployee(int id);
     }

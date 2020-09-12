@@ -5,22 +5,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using EmployeeManagementSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmployeeManagementSystem.Controllers
 {
+
     public class DepartmentsController : Controller
     {
         private readonly IDepartment _dept;
+        private readonly AppDbContext _context;
        
-        public DepartmentsController(IDepartment dept)
+        public DepartmentsController(IDepartment dept,AppDbContext context)
         {
             _dept = dept;
+            _context = context;
         }
-
         // GET: Departments
         public IActionResult Index()
         {
-            return View(_dept.getDepartments());
+            var deptList = _dept.getDepartments();
+            return View(deptList);
         }
 
 
@@ -32,7 +36,7 @@ namespace EmployeeManagementSystem.Controllers
 
         // POST: Departments/Create
         [HttpPost]
-        public IActionResult Create(Department department)
+        public IActionResult Create([Bind("Id,Name")] Department department)
         {
             _dept.InsertDepartment(department);
             return RedirectToAction("Index");

@@ -8,56 +8,40 @@ namespace EmployeeManagementSystem.Models
 {
     public class MockDepartmentList : IDepartment
     {
-        static List<Department> dept = new List<Department>();
-        private IEmployee _employee;
-        public MockDepartmentList(IEmployee  employee)
+        
+        private readonly AppDbContext _context;
+        public MockDepartmentList(AppDbContext context)
         {
-            _employee = employee;
-        }
-        static MockDepartmentList()
-        {
-            dept = new List<Department>()
-            {
-                new Department() { DepartmentId = 1,Name = "HR"},
-                new Department() { DepartmentId = 2,Name = "Engineer"},
-            };
+            _context = context;
         }
 
         public List<Department> getDepartments()
         {
-            
-            return dept;
+            return _context.departments.ToList();
         }
 
         public void InsertDepartment(Department department)
         {
-            dept.Add(department);
+            _context.departments.Add(department);
+            _context.SaveChanges();
         }
         public void UpdateDepartment(int id,Department department)
         {
-            Department updateDepartment = dept.Find(x => x.DepartmentId == department.DepartmentId);
-            updateDepartment.DepartmentId = department.DepartmentId;
-            updateDepartment.Name = department.Name;
-            foreach (var item in _employee.getEmployees().ToList())
-            {
-                if (item.department.DepartmentId == department.DepartmentId)
-                    item.department.Name = department.Name;
-            }
+            _context.Update(department);
+            _context.SaveChanges();
         }
         public void DeleteDepartment(int id)
         {
-            Department department = dept.Find(x => x.DepartmentId == id);
-            dept.Remove(department);
-            foreach (var item in _employee.getEmployees().ToList())
-            {
-                if (item.department.DepartmentId == id)
-                    _employee.getEmployees().Remove(item);
-            }
+            var department = _context.departments.Find(id);
+            _context.departments.Remove(department);
+            var employees = _context.employees.FirstOrDefault(e => e.DepartmentId == id);
+            _context.employees.Remove(employees);
+            _context.SaveChanges();
         }
 
         public Department getDepartmentById(int id)
         {
-            return dept.Find(m => m.DepartmentId == id); 
+            return _context.departments.FirstOrDefault(d => d.DepartmentId == id); 
         }
     }
 }
