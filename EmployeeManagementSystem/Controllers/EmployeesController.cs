@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using EmployeeManagementSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using EmployeeManagementSystem.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace EmployeeManagementSystem.Controllers
 {
+    [Authorize(Roles = "Admin,HR,Employee")]
     public class EmployeesController : Controller
     {
         private readonly IEmployee _employee;
@@ -29,7 +32,7 @@ namespace EmployeeManagementSystem.Controllers
             this.context = context;
         }
 
-        // GET: Employees
+        // GET: Employees   
         public IActionResult Index()
         {
 
@@ -107,17 +110,17 @@ namespace EmployeeManagementSystem.Controllers
         // GET: Employees/Edit/5
         public IActionResult Edit(int id)
         {
+            ViewBag.DeptName = _department.getDepartments();
             if (User.IsInRole("Employee"))
             {
                 var user = userManager.GetUserAsync(HttpContext.User).Result;
-                ViewBag.DeptName = _department.getDepartments();
+                //ViewBag.DeptName = _department.getDepartments();
                 var emp = _employee.getEmployees().ToList();
                 Employee employe = emp.Find(e => e.Email == user.Email);
                 return View(employe);
             }
             Employee employee = _employee.getEmployeeById(id);
             return View(employee);
-            
         }
 
         // POST: Employees/Edit/5

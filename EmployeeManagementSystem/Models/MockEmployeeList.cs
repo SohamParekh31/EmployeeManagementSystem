@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EmployeeManagementSystem.Hubs;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -10,9 +13,14 @@ namespace EmployeeManagementSystem.Models
     public class MockEmployeeList : IEmployee
     {
         private readonly AppDbContext _context;
-        public MockEmployeeList(AppDbContext context)
+        private readonly IHubContext<NotificationHub> hubContext;
+        private readonly UserManager<IdentityUser> userManager;
+
+        public MockEmployeeList(AppDbContext context, IHubContext<NotificationHub> hubContext, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            this.hubContext = hubContext;
+            this.userManager = userManager;
         }
         public void DeleteEmployee(int id)
         {
@@ -35,12 +43,21 @@ namespace EmployeeManagementSystem.Models
         public void InsertEmployee(Employee employee)
         {
             _context.Add(employee);
+            foreach (var item in getEmployees())
+            {
+                if(item.DepartmentId == employee.DepartmentId)
+                {
+                    var empnotification = userManager.FindByEmailAsync(item.Email).Result;
+                    hubContext.Clients.User(empnotification.Id).SendAsync("addEmployee", employee.Name + " " + employee.Surname + " employee Added");
+                }
+            }
             _context.SaveChanges();
         }
 
         public void UpdateEmployee(int id,Employee employee)
         {
             _context.Update(employee);
+            hubContext.Clients.Users("334cd12d-3af6-437f-b32f-1a231dbea8df", "4f6e7d79-14d6-4041-9244-cf6012f35cc1").SendAsync("employeeUpdate", employee.Name+" " +employee.Surname + " changed profile");
             _context.SaveChanges();
         }
     }

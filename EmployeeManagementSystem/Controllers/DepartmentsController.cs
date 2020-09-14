@@ -6,15 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using EmployeeManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
+using EmployeeManagementSystem.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace EmployeeManagementSystem.Controllers
 {
-
+    [Authorize(Roles = "Admin,HR")]
     public class DepartmentsController : Controller
     {
         private readonly IDepartment _dept;
         private readonly AppDbContext _context;
-       
+
         public DepartmentsController(IDepartment dept,AppDbContext context)
         {
             _dept = dept;

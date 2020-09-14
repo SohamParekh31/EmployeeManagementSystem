@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EmployeeManagementSystem.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -10,9 +12,12 @@ namespace EmployeeManagementSystem.Models
     {
         
         private readonly AppDbContext _context;
-        public MockDepartmentList(AppDbContext context)
+        private readonly IHubContext<NotificationHub> hubContext;
+
+        public MockDepartmentList(AppDbContext context,IHubContext<NotificationHub> hubContext)
         {
             _context = context;
+            this.hubContext = hubContext;
         }
 
         public List<Department> getDepartments()
@@ -23,6 +28,7 @@ namespace EmployeeManagementSystem.Models
         public void InsertDepartment(Department department)
         {
             _context.departments.Add(department);
+            hubContext.Clients.Users("334cd12d-3af6-437f-b32f-1a231dbea8df").SendAsync("departmentAdded", department.Name + " Department Added");
             _context.SaveChanges();
         }
         public void UpdateDepartment(int id,Department department)
@@ -34,8 +40,9 @@ namespace EmployeeManagementSystem.Models
         {
             var department = _context.departments.Find(id);
             _context.departments.Remove(department);
-            var employees = _context.employees.FirstOrDefault(e => e.DepartmentId == id);
-            _context.employees.Remove(employees);
+            hubContext.Clients.Users("334cd12d-3af6-437f-b32f-1a231dbea8df").SendAsync("departmentDelete", department.Name + " Department deleted");
+            //var employees = _context.employees.FirstOrDefault(e => e.DepartmentId == id);
+            //_context.employees.Remove(employees);
             _context.SaveChanges();
         }
 

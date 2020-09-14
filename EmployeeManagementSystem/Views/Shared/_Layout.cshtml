@@ -8,6 +8,9 @@
     <title>@ViewData["Title"] - EmployeeManagementSystem</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.3/signalr.min.js"></script>
 </head>
 <body>
     <header>
@@ -39,6 +42,15 @@
                     <ul class="navbar-nav ml-auto">
                         @if (signInManager.IsSignedIn(User))
                         {
+                            <li class="nav-item dropdown" >
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <i class="fad fa-bell"></i>
+                                    <span class="caret"></span>
+                                </a>
+                                <ul id="NotificationMenu" class="dropdown-menu">
+                                    <hr />
+                                </ul>
+                            </li>
                             <li class="nav-item">
                                 <form method="post" asp-action="logout" asp-controller="Account">
                                     <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
@@ -72,7 +84,40 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+
     @RenderSection("Scripts", required: false)
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+        connection.start().then(function () {
+            NotificationModule();
+        })
+        var noti = document.getElementById("NotificationMenu");
+        function NotificationModule() {
+            connection.on("departmentAdded", function (message) {
+                noti.appendChild(CreateMenuItem(message));
+                document.createElement("hr");
+            })
+            connection.on("departmentDelete", function (message) {
+                noti.appendChild(CreateMenuItem(message));
+                document.createElement("hr"); })
+            connection.on("employeeUpdate", function (message) {
+                noti.appendChild(CreateMenuItem(message));
+                document.createElement("hr");
+            })
+            connection.on("addEmployee", function (message) {
+                noti.appendChild(CreateMenuItem(message));
+                document.createElement("hr");
+            })
+        }
+        function CreateMenuItem(message) {
+            let li = document.createElement("li");
+            li.textContent = message;
+            return li;
+        }
+    </script>
 </body>
 </html>

@@ -67,7 +67,7 @@ namespace EmployeeManagementSystem
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Employees}/{action=Index}/{id?}");
-                endpoints.MapHub<NotificationHub>("/friendDemo");
+                endpoints.MapHub<NotificationHub>("/chatHub");
             });
         }
     }
