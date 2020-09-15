@@ -2,13 +2,5 @@
   "version": "1.0",
   "defaultProvider": "cdnjs",
   "libraries": [
-    {
-      "library": "microsoft-signalr@3.1.8",
-      "destination": "wwwroot/lib/microsoft-signalr/"
-    },
-    {
-      "library": "signalr.js@2.4.1",
-      "destination": "wwwroot/signalr/signalr.js/"
-    }
   ]
 }
