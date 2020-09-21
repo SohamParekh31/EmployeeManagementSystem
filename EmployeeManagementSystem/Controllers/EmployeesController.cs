@@ -46,6 +46,19 @@ namespace EmployeeManagementSystem.Controllers
             }
             return View(_employee.getEmployees());
         }
+        public IActionResult getEmployee()
+        {
+
+            if (User.IsInRole("Employee"))
+            {
+                var user = userManager.GetUserAsync(HttpContext.User).Result;
+                var emp = _employee.getEmployees().ToList();
+                var employee = emp.Find(e => e.Email == user.Email);
+                var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
+                return View(employeeList);
+            }
+            return Ok(_employee.getEmployees());
+        }
 
 
         // GET: Employees/Create

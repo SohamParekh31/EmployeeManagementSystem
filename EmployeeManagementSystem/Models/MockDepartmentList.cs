@@ -30,11 +30,14 @@ namespace EmployeeManagementSystem.Models
             _context.departments.Add(department);
             hubContext.Clients.Users("334cd12d-3af6-437f-b32f-1a231dbea8df").SendAsync("departmentAdded", department.Name + " Department Added");
             _context.SaveChanges();
+            hubContext.Clients.All.SendAsync("Refresh");
+
         }
         public void UpdateDepartment(int id,Department department)
         {
             _context.Update(department);
             _context.SaveChanges();
+            hubContext.Clients.All.SendAsync("Refresh");
         }
         public void DeleteDepartment(int id)
         {
@@ -44,6 +47,8 @@ namespace EmployeeManagementSystem.Models
             //var employees = _context.employees.FirstOrDefault(e => e.DepartmentId == id);
             //_context.employees.Remove(employees);
             _context.SaveChanges();
+            hubContext.Clients.All.SendAsync("Refresh");
+
         }
 
         public Department getDepartmentById(int id)

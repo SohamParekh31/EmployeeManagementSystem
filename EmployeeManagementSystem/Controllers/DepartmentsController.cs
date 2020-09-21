@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace EmployeeManagementSystem.Controllers
 {
-    [Authorize(Roles = "Admin,HR")]
     public class DepartmentsController : Controller
     {
         private readonly IDepartment _dept;
@@ -23,14 +22,23 @@ namespace EmployeeManagementSystem.Controllers
             _context = context;
         }
         // GET: Departments
+        [Authorize(Roles = "Admin,HR")]
+
         public IActionResult Index()
         {
             var deptList = _dept.getDepartments();
             return View(deptList);
         }
+        [Authorize(Roles = "Admin,HR")]
 
-
+        public IActionResult GetDepart()
+        {
+            var deptList = _dept.getDepartments();
+            return Ok(deptList);
+        }
         // GET: Departments/Create
+        [Authorize(Roles = "Admin")]
+
         public IActionResult Create()
         {
             return View();
@@ -38,6 +46,7 @@ namespace EmployeeManagementSystem.Controllers
 
         // POST: Departments/Create
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create([Bind("Id,Name")] Department department)
         {
             _dept.InsertDepartment(department);
@@ -45,6 +54,7 @@ namespace EmployeeManagementSystem.Controllers
         }
 
         //GET: Departments/Edit/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             Department department = _dept.getDepartmentById(id);
@@ -53,6 +63,7 @@ namespace EmployeeManagementSystem.Controllers
 
         ////POST: Departments/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id, Department department)
         {
             _dept.UpdateDepartment(id,department);
@@ -60,6 +71,7 @@ namespace EmployeeManagementSystem.Controllers
         }
 
         // GET: Departments/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             Department department = _dept.getDepartmentById(id);
@@ -68,6 +80,7 @@ namespace EmployeeManagementSystem.Controllers
 
         ////// POST: Departments/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteConfirmed(int id)
         {
             _dept.DeleteDepartment(id);

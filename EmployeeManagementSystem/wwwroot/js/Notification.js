@@ -4,6 +4,7 @@
     .build();
 var count = 0;
 var badgeCounter = document.getElementById("badge-counter");
+
 badgeCounter.style.display = "none";
 
 connection.start().then(function () {
@@ -50,4 +51,33 @@ function CreateMenuItem(message) {
 function CreateLine() {
     let hr = document.createElement("hr");
     return hr;
+}
+var t = document.getElementById("tabletoappend");
+connection.on("Refresh", () => {
+    t.innerHTML = "";
+    loaddataforDepartment();
+});
+
+loaddataforDepartment();
+function loaddataforDepartment() {
+    $.ajax({
+        url: 'Departments/GetDepart',
+        method: 'GET',
+        success: (result) => {
+            var rows = [];
+            $.each(result, (k, v) => {
+                console.log(v.name);
+                loadDepartment(v);
+            })
+        },
+        error: (error) => {
+            console.log(error)
+        }
+    })
+}
+
+function loadDepartment(Department) {
+    t.innerHTML += `<tbody><tr><td>${Department.name}</td>
+                    <td><a href="Departments/Edit/${Department.departmentId}">Edit</a> |
+                <a href="Departments/Delete/${Department.departmentId}" >Delete</a></td></tr></tbody>`
 }
