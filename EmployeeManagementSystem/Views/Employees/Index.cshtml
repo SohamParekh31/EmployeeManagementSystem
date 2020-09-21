@@ -1,4 +1,5 @@
 ﻿@inject SignInManager<IdentityUser> signInManager;
+@inject UserManager<IdentityUser> userManager;
 @model IEnumerable<EmployeeManagementSystem.Models.Employee>
 
 @{
@@ -16,7 +17,7 @@
 {
     <a asp-action="Edit" class="btn btn-outline-primary mt-2 mb-4">Edit Profile</a>
 }
-
+<input id="getRole" hidden value="@ViewBag.Message" />
 <table class="table">
     <thead>
         <tr>
@@ -43,35 +44,35 @@
     </thead>
     <tbody id="tabletoappendEmp">
         @*@foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Surname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Qualification)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Contact_Number)
-                </td>
-                <td>
-                    @Html.DisplayFor(modeItem => item.department.Name)
-                </td>
-                @if (signInManager.IsSignedIn(User) && (User.IsInRole("Admin") || User.IsInRole("HR")))
-                {
+            {
+                <tr>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        @Html.DisplayFor(modelItem => item.Name)
                     </td>
-                }
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Surname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Qualification)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Contact_Number)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modeItem => item.department.Name)
+                    </td>
+                    @if (signInManager.IsSignedIn(User) && (User.IsInRole("Admin") || User.IsInRole("HR")))
+                    {
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    }
 
-            </tr>
-        }*@
+                </tr>
+            }*@
     </tbody>
 </table>

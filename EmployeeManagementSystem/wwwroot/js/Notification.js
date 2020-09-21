@@ -104,14 +104,24 @@ function loaddataforEmployee() {
         }
     })
 }
-
+var getrole = document.getElementById('getRole');
 function loadEmployee(employee) {
-    t1.innerHTML += `<tbody><tr><td>${employee.name}</td>
+    if (getrole.value == 'Admin' || getrole.value == 'HR') {
+        t1.innerHTML += `<tbody><tr><td>${employee.name}</td>
                        <td>${employee.surname}</td>
                         <td>${employee.address}</td>
                         <td>${employee.qualification}</td>
                         <td>${employee.contact_Number}</td>
                         <td>${employee.department.name}</td>
                     <td><a href="Employees/Edit/${employee.id}">Edit</a> |
-                <a href="Employees/Delete/${employee.id}" >Delete</a></td></tr></tbody>`
+                <a href="Employees/Delete/${employee.id}" >Delete</a></td></tr></tbody>`;
+    }
+    else {
+        t1.innerHTML += `<tbody><tr><td>${employee.name}</td>
+                       <td>${employee.surname}</td>
+                        <td>${employee.address}</td>
+                        <td>${employee.qualification}</td>
+                        <td>${employee.contact_Number}</td>
+                        <td>${employee.department.name}</td>`;
+    }
 }
