@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace EmployeeManagementSystem.Controllers
 {
-    [Authorize(Roles = "Admin,HR,Employee")]
+    
     public class EmployeesController : Controller
     {
         private readonly IEmployee _employee;
@@ -21,18 +21,21 @@ namespace EmployeeManagementSystem.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly AppDbContext context;
+        private readonly IHubContext<NotificationHub> hubContext;
 
         public EmployeesController(IEmployee employee,IDepartment department, UserManager<IdentityUser> userManager
-                                    ,RoleManager<IdentityRole> roleManager,AppDbContext context)
+                                    ,RoleManager<IdentityRole> roleManager,AppDbContext context, IHubContext<NotificationHub> hubContext)
         {
             _employee = employee;
             _department = department;
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.context = context;
+            this.hubContext = hubContext;
         }
 
-        // GET: Employees   
+        // GET: Employees  
+        [Authorize(Roles = "Admin,HR,Employee")]
         public IActionResult Index()
         {
 
@@ -46,6 +49,7 @@ namespace EmployeeManagementSystem.Controllers
             }
             return View(_employee.getEmployees());
         }
+        [Authorize(Roles = "Admin,HR,Employee")]
         public IActionResult getEmployee()
         {
 
@@ -55,13 +59,14 @@ namespace EmployeeManagementSystem.Controllers
                 var emp = _employee.getEmployees().ToList();
                 var employee = emp.Find(e => e.Email == user.Email);
                 var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
-                return View(employeeList);
+                return Ok(employeeList);
             }
             return Ok(_employee.getEmployees());
         }
 
 
         // GET: Employees/Create
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult Create()
         {
             ViewBag.DeptName = _department.getDepartments();
@@ -70,6 +75,7 @@ namespace EmployeeManagementSystem.Controllers
 
         // POST: Employees/Create
         [HttpPost]
+        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> Create(Employee employee)
         {
             if (ModelState.IsValid)
@@ -121,6 +127,7 @@ namespace EmployeeManagementSystem.Controllers
         }
 
         // GET: Employees/Edit/5
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult Edit(int id)
         {
             ViewBag.DeptName = _department.getDepartments();
@@ -138,6 +145,7 @@ namespace EmployeeManagementSystem.Controllers
 
         // POST: Employees/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Admin,HR")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Employee employee)
         {
@@ -154,6 +162,7 @@ namespace EmployeeManagementSystem.Controllers
 
         // GET: Employees/Delete/5
         [AllowAnonymous]
+        [Authorize(Roles = "Admin,HR")]
         public IActionResult Delete(int id)
         {
             Employee employee = _employee.getEmployeeById(id);
@@ -162,6 +171,7 @@ namespace EmployeeManagementSystem.Controllers
 
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin,HR")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -171,6 +181,7 @@ namespace EmployeeManagementSystem.Controllers
             await userManager.DeleteAsync(userEmp);
             context.employees.Remove(emp);
             context.SaveChanges();
+            await hubContext.Clients.All.SendAsync("RefreshEmployee");
             return RedirectToAction("Index");
         }
     }
