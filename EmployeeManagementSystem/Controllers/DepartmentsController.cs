@@ -30,7 +30,6 @@ namespace EmployeeManagementSystem.Controllers
             return View(deptList);
         }
         [Authorize(Roles = "Admin,HR")]
-
         public IActionResult GetDepart()
         {
             var deptList = _dept.getDepartments();
