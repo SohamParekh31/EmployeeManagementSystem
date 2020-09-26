@@ -1,0 +1,39 @@
+<p>
+  <a class="btn btn-outline-primary mt-3" [routerLink]="['/dashboard/empAdd']" routerLinkActive="router-link-active">Add New Employee</a>
+</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Full Name</th>
+      <th>Address</th>
+      <th>Qualification</th>
+      <th>Contact Number</th>
+      <th>Department</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let emp of employees">
+      <td>
+        {{emp.name}} {{emp.surname}}
+      </td>
+      <td>
+        {{emp.address}}
+      </td>
+      <td>
+        {{emp.qualification}}
+      </td>
+      <td>
+        {{emp.contact_Number}}
+      </td>
+      <td>
+        {{emp.department.name}}
+      </td>
+      <td>
+        <a class="btn btn-outline-primary btn-sm"
+        [routerLink]="['/dashboard/empEdit',emp.id]">Edit</a> |
+        <a class="btn btn-outline-danger btn-sm">Delete</a>
+      </td>
+    </tr>
+  </tbody>
+</table>

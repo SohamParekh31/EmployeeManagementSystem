@@ -1,0 +1,166 @@
+<div class="card" style="margin-top: 10px;">
+  <div class="card-header">Add Employee</div>
+
+  <div class="card-body">
+    <form novalidate #form="ngForm">
+      <div class="form-group">
+        <label for="name">First Name</label>
+        <input
+          id="fname"
+          name="fname"
+          class="form-control"
+          placeholder="First Name"
+          [(ngModel)]="employee.name"
+          required
+          #firstName="ngModel"
+        />
+        <div
+          class="alert-danger"
+          *ngIf="firstName.errors && (firstName.dirty || firstName.touched)"
+        >
+          <span *ngIf="firstName.errors.required">First name is required</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="Lname">Last Name</label>
+        <input
+          id="lname"
+          name="lname"
+          class="form-control"
+          placeholder="Last Name"
+          [(ngModel)]="employee.surname"
+          required
+          #lastName="ngModel"
+        />
+        <div
+          class="alert-danger"
+          *ngIf="lastName.errors && (lastName.dirty || lastName.touched)"
+        >
+          <span *ngIf="lastName.errors.required">Last name is required</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address</label>
+        <textarea
+          id="address"
+          name="address"
+          placeholder="Address"
+          class="form-control"
+          [(ngModel)]="employee.address"
+          #address="ngModel"
+        ></textarea>
+        <div
+          class="alert-danger"
+          *ngIf="address.errors && (address.dirty || address.touched)"
+        >
+          <span *ngIf="address.errors.required">Address is required</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="qualification">Qualification</label>
+        <textarea
+          id="qualification"
+          name="qualification"
+          placeholder="qualification"
+          class="form-control"
+          [(ngModel)]="employee.qualification"
+          #qualification="ngModel"
+        ></textarea>
+        <div
+          class="alert-danger"
+          *ngIf="qualification.errors && (qualification.dirty || qualification.touched)"
+        >
+          <span *ngIf="qualification.errors.required">qualification is required</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="number">Contact Number</label>
+        <input
+          type="number"
+          id="number"
+          name="number"
+          placeholder="Contact Number"
+          class="form-control"
+          [(ngModel)]="employee.contact_Number"
+          required
+          #number="ngModel"
+          pattern="[6789]\d{9}"
+        />
+        <div
+          class="alert-danger"
+          *ngIf="number.errors && (number.dirty || number.touched)"
+        >
+          <span *ngIf="number.errors.required">number is required</span>
+          <span *ngIf="number.errors.pattern"
+            >Digits should start with 6,7,8,9</span
+          >
+        </div>
+      </div>
+
+
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email"
+          class="form-control"
+          [(ngModel)]="employee.email"
+          required
+          #email="ngModel"
+          pattern="[^ @]*@[^ @]*"
+        />
+        <div
+          class="alert-danger"
+          *ngIf="email.errors && (email.dirty || email.touched)"
+        >
+          <span *ngIf="email.errors.required">Email is required</span>
+          <span *ngIf="email.errors.pattern"
+            >Email is not in correct Format!</span
+          >
+        </div>
+      </div>
+
+      <!-- <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          class="form-control"
+          [(ngModel)]="employee.password"
+          required
+          #password="ngModel"
+        />
+        <div
+          class="alert-danger"
+          *ngIf="password.errors && (password.dirty || password.touched)"
+        >
+          <span *ngIf="password.errors.required">Password is required</span>
+        </div>
+      </div> -->
+
+       <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="form.invalid"
+        [title]="!form.valid ? 'Form is not valid' : 'Save your Entered data'"
+        (click)="saveEmployee()"
+      >
+        Save Details
+      </button>
+      <a class="btn btn-outline-warning ml-2"
+      [routerLink]="['/dashboard/empList']"
+      >
+        Cancel
+      </a>
+    </form>
+  </div>
+</div>

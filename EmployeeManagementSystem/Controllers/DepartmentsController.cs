@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace EmployeeManagementSystem.Controllers
 {
+    [AllowAnonymous]
+    [Route("[controller]")]
+    [ApiController]
     public class DepartmentsController : Controller
     {
         private readonly IDepartment _dept;
@@ -22,64 +25,64 @@ namespace EmployeeManagementSystem.Controllers
             _context = context;
         }
         // GET: Departments
-        [Authorize(Roles = "Admin,HR")]
-
+        [HttpGet]
         public IActionResult Index()
-        {
-            var deptList = _dept.getDepartments();
-            return View(deptList);
-        }
-        [Authorize(Roles = "Admin,HR")]
-        public IActionResult GetDepart()
         {
             var deptList = _dept.getDepartments();
             return Ok(deptList);
         }
-        // GET: Departments/Create
-        [Authorize(Roles = "Admin")]
-
-        public IActionResult Create()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Department>> GetDepartment(int id)
         {
-            return View();
+            var departments = await _context.departments.FindAsync(id);
+
+            if (departments == null)
+            {
+                return NotFound();
+            }
+
+            return departments;
         }
+        
+
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
 
         // POST: Departments/Create
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Create([Bind("Id,Name")] Department department)
+        public ActionResult Create(Department department)
         {
-            _dept.InsertDepartment(department);
-            return RedirectToAction("Index");
+            _context.departments.Add(department);
+            _context.SaveChanges();
+            return Ok(department);
         }
 
         //GET: Departments/Edit/5
-        [Authorize(Roles = "Admin")]
-        public IActionResult Edit(int id)
-        {
-            Department department = _dept.getDepartmentById(id);
-            return View(department);
-        }
+        //public IActionResult Edit(int id)
+        //{
+        //    Department department = _dept.getDepartmentById(id);
+        //    return View(department);
+        //}
 
         ////POST: Departments/Edit/5
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
         public IActionResult Edit(int id, Department department)
         {
             _dept.UpdateDepartment(id,department);
-            return RedirectToAction("Index");
+            return Ok(department);
         }
 
         // GET: Departments/Delete/5
-        [Authorize(Roles = "Admin")]
-        public ActionResult Delete(int id)
-        {
-            Department department = _dept.getDepartmentById(id);
-            return View(department);
-        }
+        //public ActionResult Delete(int id)
+        //{
+        //    Department department = _dept.getDepartmentById(id);
+        //    return View(department);
+        //}
 
         ////// POST: Departments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}"), ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
             _dept.DeleteDepartment(id);

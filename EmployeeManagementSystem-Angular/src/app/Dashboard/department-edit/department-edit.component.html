@@ -1,0 +1,42 @@
+<div class="card" style="margin-top: 10px;">
+  <div class="card-header">Add Department</div>
+
+  <div class="card-body">
+    <form novalidate #form="ngForm">
+      <div class="form-group">
+        <input hidden name="departmentId" [value]="department.departmentId" />
+        <label for="dept">Department Name</label>
+        <input
+          id="dept"
+          name="dept"
+          class="form-control"
+          placeholder="Department Name"
+          [(ngModel)]="department.name"
+          required
+          #dept="ngModel"
+        />
+        <div
+          class="alert-danger"
+          *ngIf="dept.errors && (dept.dirty || dept.touched)"
+        >
+          <span *ngIf="dept.errors.required">First name is required</span>
+        </div>
+      </div>
+
+       <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="form.invalid"
+        [title]="!form.valid ? 'Form is not valid' : 'Save your Entered data'"
+        (click)="updateDepartment()"
+      >
+        Save Details
+      </button>
+      <a class="btn btn-outline-warning ml-2"
+      [routerLink]="['/dashboard/empList']"
+      >
+        Cancel
+      </a>
+    </form>
+  </div>
+</div>

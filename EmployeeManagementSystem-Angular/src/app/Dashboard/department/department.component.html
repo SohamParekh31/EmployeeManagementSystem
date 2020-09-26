@@ -1,0 +1,26 @@
+<div class="row">
+  <p>
+    <a class="btn btn-outline-primary mt-3" [routerLink]="['/dashboard/deptAdd']" routerLinkActive="router-link-active">Add New Department</a>
+  </p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Department Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dept of departments">
+          <td>
+            {{dept.name}}
+          </td>
+          <td>
+            <a class="btn btn-outline-primary btn-sm"
+            [routerLink]="['/dashboard/deptEdit',dept.departmentId]">Edit</a> |
+            <a class="btn btn-outline-danger btn-sm"
+            (click)="deleteDepartment(dept)">Delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</div>

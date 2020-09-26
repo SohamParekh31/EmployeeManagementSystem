@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace EmployeeManagementSystem.Controllers
 {
-    [Authorize(Roles = "Admin,HR,Employee")]
+    [AllowAnonymous]
+    [Route("[controller]")]
+    [ApiController]
     public class EmployeesController : Controller
     {
         private readonly IEmployee _employee;
@@ -34,43 +36,32 @@ namespace EmployeeManagementSystem.Controllers
             this.hubContext = hubContext;
         }
 
-        // GET: Employees   
+        // GET: Employees  
+        [AllowAnonymous]
+        [HttpGet]
         public IActionResult Index()
         {
             //ViewBag.Message = userManager.GetUserAsync(HttpContext.User).Result;
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
-            ViewBag.Message = userManager.GetRolesAsync(user).Result[0];
-            if (User.IsInRole("Employee")) 
-            {
+            //var user = userManager.GetUserAsync(HttpContext.User).Result;
+            ////ViewBag.Message = userManager.GetRolesAsync(user).Result[0];
+            //if (User.IsInRole("Employee")) 
+            //{
                 
-                var emp = _employee.getEmployees().ToList();
-                var employee = emp.Find(e => e.Email == user.Email);
-                var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
-                return View(employeeList);
-            }
-            return View(_employee.getEmployees());
-        }
-        public IActionResult getEmployee()
-        {
-
-            if (User.IsInRole("Employee"))
-            {
-                var user = userManager.GetUserAsync(HttpContext.User).Result;
-                var emp = _employee.getEmployees().ToList();
-                var employee = emp.Find(e => e.Email == user.Email);
-                var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
-                return Ok(employeeList);
-            }
+            //    var emp = _employee.getEmployees().ToList();
+            //    var employee = emp.Find(e => e.Email == user.Email);
+            //    var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
+            //    return Ok(employeeList);
+            //}
             return Ok(_employee.getEmployees());
         }
 
 
         // GET: Employees/Create
-        public IActionResult Create()
-        {
-            ViewBag.DeptName = _department.getDepartments();
-            return View();
-        }
+        //public IActionResult Create()
+        //{
+        //    ViewBag.DeptName = _department.getDepartments();
+        //    return View();
+        //}
 
         // POST: Employees/Create
         [HttpPost]
@@ -121,28 +112,27 @@ namespace EmployeeManagementSystem.Controllers
                 }
                 
             }
-            return View();
+            return Ok(employee);
         }
 
         // GET: Employees/Edit/5
-        public IActionResult Edit(int id)
-        {
-            ViewBag.DeptName = _department.getDepartments();
-            if (User.IsInRole("Employee"))
-            {
-                var user = userManager.GetUserAsync(HttpContext.User).Result;
-                //ViewBag.DeptName = _department.getDepartments();
-                var emp = _employee.getEmployees().ToList();
-                Employee employe = emp.Find(e => e.Email == user.Email);
-                return View(employe);
-            }
-            Employee employee = _employee.getEmployeeById(id);
-            return View(employee);
-        }
+        //public IActionResult Edit(int id)
+        //{
+        //    ViewBag.DeptName = _department.getDepartments();
+        //    if (User.IsInRole("Employee"))
+        //    {
+        //        var user = userManager.GetUserAsync(HttpContext.User).Result;
+        //        //ViewBag.DeptName = _department.getDepartments();
+        //        var emp = _employee.getEmployees().ToList();
+        //        Employee employe = emp.Find(e => e.Email == user.Email);
+        //        return View(employe);
+        //    }
+        //    Employee employee = _employee.getEmployeeById(id);
+        //    return View(employee);
+        //}
 
         // POST: Employees/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPut("{id}")]
         public IActionResult Edit(int id, Employee employee)
         {
             try
@@ -157,17 +147,14 @@ namespace EmployeeManagementSystem.Controllers
         }
 
         // GET: Employees/Delete/5
-        [AllowAnonymous]
-        public IActionResult Delete(int id)
-        {
-            Employee employee = _employee.getEmployeeById(id);
-            return View(employee);
-        }
+        //public IActionResult Delete(int id)
+        //{
+        //    Employee employee = _employee.getEmployeeById(id);
+        //    return View(employee);
+        //}
 
         // POST: Employees/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        [HttpDelete("{id}"), ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var emp = context.employees.Find(id);
