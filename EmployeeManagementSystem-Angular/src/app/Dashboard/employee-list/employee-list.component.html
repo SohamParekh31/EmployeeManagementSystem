@@ -32,7 +32,8 @@
       <td>
         <a class="btn btn-outline-primary btn-sm"
         [routerLink]="['/dashboard/empEdit',emp.id]">Edit</a> |
-        <a class="btn btn-outline-danger btn-sm">Delete</a>
+        <a class="btn btn-outline-danger btn-sm"
+        (click)="deleteEmployee(emp)">Delete</a>
       </td>
     </tr>
   </tbody>

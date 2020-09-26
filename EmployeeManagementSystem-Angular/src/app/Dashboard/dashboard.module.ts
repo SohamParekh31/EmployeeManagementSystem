@@ -9,6 +9,7 @@ import { EmployeeEditComponent } from './employee-edit/employee-edit.component';
 import { EmployeeAddComponent } from './employee-add/employee-add.component';
 import { DepartmentEditComponent } from './department-edit/department-edit.component';
 import { DepartmentAddComponent } from './department-add/department-add.component';
+import { AuthGuard } from '../auth/auth.guard';
 
 
 
@@ -26,13 +27,13 @@ import { DepartmentAddComponent } from './department-add/department-add.componen
     CommonModule,
     FormsModule,
     RouterModule.forChild([
-      { path: '',redirectTo: '/deptList', pathMatch: 'full'},
-      { path: 'empList', component: EmployeeListComponent },
-      { path: 'empAdd', component: EmployeeAddComponent },
-      { path: 'empEdit/:id', component: EmployeeEditComponent },
-      { path: 'deptList', component: DepartmentComponent },
-      { path: 'deptAdd', component: DepartmentAddComponent },
-      { path: 'deptEdit/:id', component: DepartmentEditComponent },
+      { path: '',redirectTo: '/deptList', pathMatch: 'full',canActivate:[AuthGuard]},
+      { path: 'empList', component: EmployeeListComponent,canActivate:[AuthGuard] },
+      { path: 'empAdd', component: EmployeeAddComponent,canActivate:[AuthGuard] },
+      { path: 'empEdit/:id', component: EmployeeEditComponent ,canActivate:[AuthGuard]},
+      { path: 'deptList', component: DepartmentComponent ,canActivate:[AuthGuard]},
+      { path: 'deptAdd', component: DepartmentAddComponent ,canActivate:[AuthGuard]},
+      { path: 'deptEdit/:id', component: DepartmentEditComponent ,canActivate:[AuthGuard]},
     ])
   ]
 })

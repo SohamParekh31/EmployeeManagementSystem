@@ -15,10 +15,19 @@ export class EmployeeListComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getEmployees().subscribe(
       emp => {
-        this.employees = emp,
-        console.log(emp);
+        this.employees = emp;
       }
     );
+  }
+  deleteEmployee(employee:Employee){
+    if(confirm(`Are you sure you want to delete ${employee.name} Employee?`)){
+      this.dataService.deleteEmployee(employee).subscribe(
+        ()=>{
+          console.log("Employee Deleted");
+        }
+      )
+    }
+    window.location.reload();
   }
 
 }

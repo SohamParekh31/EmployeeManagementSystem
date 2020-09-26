@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand navbar-dark bg-dark">
     <a class="navbar-brand">Employee Management System</a>
     <ul class="navbar-nav">
-      <li class="nav-item" *ngIf="checkAdmin()">
+      <li class="nav-item">
         <a class="nav-link" [routerLink]="['/dashboard/deptList']" routerLinkActive="active">Department</a>
       </li>
       <li class="nav-item">
@@ -10,10 +10,19 @@
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item my-2 my-lg-0" >
-        <a class="nav-link" [routerLink]="['']"  routerLinkActive="active" title="Log Out"
+      <!-- <li class="nav-item my-2 my-lg-0" >
+        <a class="nav-link" (ngSubmit)="logout()"
           ><i class="fas fa-sign-out-alt"></i></a>
-      </li>
+      </li> -->
+      <li class="nav-item">
+        <form (ngSubmit)="logout()">
+            <button type="submit" style="width:auto"
+                    class="nav-link btn btn-link py-0">
+                    <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </form>
+
+    </li>
     </ul>
   </nav>
 </header>

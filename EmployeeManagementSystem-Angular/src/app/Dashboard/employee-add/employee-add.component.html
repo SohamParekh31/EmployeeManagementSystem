@@ -101,51 +101,17 @@
         </div>
       </div>
 
-
-
       <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="Email"
+        <label for="dept">Department</label>
+        <select
           class="form-control"
-          [(ngModel)]="employee.email"
-          required
-          #email="ngModel"
-          pattern="[^ @]*@[^ @]*"
-        />
-        <div
-          class="alert-danger"
-          *ngIf="email.errors && (email.dirty || email.touched)"
+          name="dept"
+          id="dept"
+          [(ngModel)]="employee.departmentId"
         >
-          <span *ngIf="email.errors.required">Email is required</span>
-          <span *ngIf="email.errors.pattern"
-            >Email is not in correct Format!</span
-          >
-        </div>
+          <option *ngFor="let type of department" [ngValue]="type.departmentId">{{ type.name }}</option>
+        </select>
       </div>
-
-      <!-- <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Password"
-          class="form-control"
-          [(ngModel)]="employee.password"
-          required
-          #password="ngModel"
-        />
-        <div
-          class="alert-danger"
-          *ngIf="password.errors && (password.dirty || password.touched)"
-        >
-          <span *ngIf="password.errors.required">Password is required</span>
-        </div>
-      </div> -->
 
        <button
         type="submit"

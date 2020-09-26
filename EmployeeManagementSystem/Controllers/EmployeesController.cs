@@ -41,18 +41,32 @@ namespace EmployeeManagementSystem.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+
             //ViewBag.Message = userManager.GetUserAsync(HttpContext.User).Result;
-            //var user = userManager.GetUserAsync(HttpContext.User).Result;
-            ////ViewBag.Message = userManager.GetRolesAsync(user).Result[0];
-            //if (User.IsInRole("Employee")) 
-            //{
-                
-            //    var emp = _employee.getEmployees().ToList();
-            //    var employee = emp.Find(e => e.Email == user.Email);
-            //    var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
-            //    return Ok(employeeList);
-            //}
+            var user = userManager.GetUserAsync(HttpContext.User).Result;
+            //ViewBag.Message = userManager.GetRolesAsync(user).Result[0];
+            if (User.IsInRole("Employee"))
+            {
+
+                var emp = _employee.getEmployees().ToList();
+                var employee = emp.Find(e => e.Email == user.Email);
+                var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
+                return Ok(employeeList);
+            }
             return Ok(_employee.getEmployees());
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<Employee> GetEmployee(int id)
+        {
+            var employees = _employee.getEmployeeById(id);
+
+            if (employees == null)
+            {
+                return NotFound();
+            }
+
+            return employees;
         }
 
 

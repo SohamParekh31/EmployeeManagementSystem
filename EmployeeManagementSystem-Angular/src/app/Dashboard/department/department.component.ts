@@ -12,8 +12,7 @@ export class DepartmentComponent implements OnInit {
   constructor(private dataService:DataService) {
     this.dataService.getDepartments().subscribe(
       depart => {
-        this.departments = depart,
-        console.log(depart);
+        this.departments = depart;
       }
     );
   }

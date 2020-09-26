@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from "@angular/forms";
+import { Department } from 'src/app/models/Department';
 import { Employee } from 'src/app/models/Employee';
+import { DataService } from 'src/app/shared/data.service';
+import { NgForm } from "@angular/forms";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-employee-add',
@@ -8,21 +11,31 @@ import { Employee } from 'src/app/models/Employee';
   styleUrls: ['./employee-add.component.css']
 })
 export class EmployeeAddComponent implements OnInit {
+  department:Department[];
   employee:Employee = {
-    id:1,
+    id:0,
     name:null,
     surname:null,
     address:null,
     qualification:null,
     contact_Number:null,
-    departmentId: 1,
-    email:null,
+    departmentId: 0,
   };
-  constructor() { }
+  constructor(private dataService:DataService,private route:Router) { }
 
   ngOnInit(): void {
+    this.dataService.getDepartments().subscribe(
+      depart => {
+        this.department = depart;
+      }
+    );
   }
   saveEmployee(){
-    console.log(this.employee);
+    this.dataService.addEmployee(this.employee).subscribe(
+      ()=>{
+        console.log(`${this.employee.name} Employee Added`);
+        this.route.navigate(['/dashboard/empList']);
+      }
+    );
   }
 }

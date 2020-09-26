@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Routing;
 
 namespace EmployeeManagementSystem.Controllers
 {
+    [Route("[controller]")]
+    [ApiController]
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser> userManager;
@@ -21,10 +23,12 @@ namespace EmployeeManagementSystem.Controllers
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
+        [HttpGet]
+        [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
-            return RedirectToAction("index", "employees");
+            return Ok();
         }
         [HttpGet]
         [AllowAnonymous]
@@ -57,14 +61,15 @@ namespace EmployeeManagementSystem.Controllers
             }
             return View(model);
         }
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Login()
-        {
-            return View();
-        }
+        //[HttpGet]
+        //[AllowAnonymous]
+        //public IActionResult Login()
+        //{
+        //    return View();
+        //}
         [HttpPost]
         [AllowAnonymous]
+        [Route("Login")]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (ModelState.IsValid)
@@ -79,13 +84,13 @@ namespace EmployeeManagementSystem.Controllers
                         if (!string.IsNullOrEmpty(returnUrl))
                             return Redirect(returnUrl);
                         else
-                            return RedirectToAction("index", "employees");
+                            return Ok();
                     }
                     ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
                 }
                 
             }
-            return View(model);
+            return BadRequest();
         }
         [HttpGet]
         [AllowAnonymous]

@@ -13,6 +13,19 @@ export class DataService {
   url = 'https://localhost:44318';
   constructor(private http:HttpClient) { }
 
+  login(login){
+    return this.http.post(this.url+'/Account/Login',login);
+  }
+  logout(){
+    return this.http.get(this.url+'/Account/Logout');
+  }
+  checkLogin(): boolean {
+    if (localStorage.getItem('token') != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   getDepartments(): Observable<Department[]> {
     return this.http.get<Department[]>(this.url+'/Departments')
       .pipe(
@@ -48,6 +61,30 @@ export class DataService {
       .pipe(
         catchError(err => this.handleError(err))
       );
+  }
+  getEmployeeById(id:number):Observable<Employee>{
+    return this.http.get<Employee>(this.url+`/Employees/${id}`);
+  }
+  addEmployee(employee:Employee): Observable<Employee>{
+    return this.http.post<Employee>(this.url+'/Employees',employee,{
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    });
+  }
+  editEmployee(employee:Employee): Observable<Employee>{
+    return this.http.put<Employee>(this.url+`/Employees/${employee.id}`,employee,{
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    });
+  }
+  deleteEmployee(employee:Employee):Observable<Employee>{
+    return this.http.delete<Employee>(this.url+`/Employees/${employee.id}`,{
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    });
   }
   private handleError(err) {
     // in a real world app, we may send the server to some remote logging infrastructure

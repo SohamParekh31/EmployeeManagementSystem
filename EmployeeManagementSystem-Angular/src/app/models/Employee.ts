@@ -7,7 +7,7 @@ export interface Employee {
   address: string;
   qualification: string;
   contact_Number: number;
-  email:string;
+  email?:string;
   departmentId: number;
   department?: Department;
 }
