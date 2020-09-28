@@ -20,17 +20,20 @@ export class EmployeeListComponent implements OnInit {
     email:null,
     departmentId: 0,
   };
+  employssWithSameDept:Employee[];
   constructor(public dataService:DataService) { }
 
   ngOnInit(): void {
     var empEmail = localStorage.getItem('email');
-    //console.log(role);
     this.dataService.getEmployees().subscribe(
       emp => {
         this.employees = emp;
         if(localStorage.getItem('role')=='Employee'){
           this.emp = this.employees.find(e => e.email == empEmail);
-        console.log(this.emp);
+          this.employssWithSameDept = emp.filter(e => e.departmentId == this.emp.departmentId);
+        }
+        else{
+          this.employssWithSameDept = emp
         }
       }
     );
