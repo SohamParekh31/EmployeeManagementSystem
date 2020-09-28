@@ -10,19 +10,14 @@ import { DataService } from '../shared/data.service';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(private dataService:DataService,private route:Router,private http:HttpClient) { }
+  constructor(public dataService:DataService,private route:Router,private http:HttpClient) { }
 
   ngOnInit(): void {
   }
   logout(){
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    window.location.href = '/login';
 
-    var data = this.http.get('https://localhost:44318/Account/Logout');
-    data.subscribe();
-    this.route.navigate(['/login']);
-    // this.dataService.logout().subscribe(
-    //   () => ,
-    //   (err) => console.log(err)
-    // );
   }
 }

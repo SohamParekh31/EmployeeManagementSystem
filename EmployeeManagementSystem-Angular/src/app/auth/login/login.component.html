@@ -32,7 +32,7 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text"><i class="fas fa-user"></i></span>
 						</div>
-						<input type="email" id="email" class="form-control" name="email" required ngModel
+						<input type="email" id="email" class="form-control" name="email" required [(ngModel)]="login.email"
             placeholder="Enter Your Email" email />
 
 					</div>
@@ -40,14 +40,11 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text"><i class="fas fa-key"></i></span>
 						</div>
-						<input type="password" id="Password" class="form-control" name="password" required ngModel
+						<input type="password" id="Password" class="form-control" name="password" required [(ngModel)]="login.password"
             placeholder="Enter Your Password" />
 					</div>
-					<div class="row align-items-center remember">
-						<input type="checkbox">Remember Me
-					</div>
 					<div class="form-group">
-						<input type="submit" value="Login" class="btn float-right login_btn">
+						<input type="submit" value="Login" class="btn float-left login_btn">
 					</div>
 				</form>
 			</div>

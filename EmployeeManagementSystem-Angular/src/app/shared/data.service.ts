@@ -16,11 +16,22 @@ export class DataService {
   login(login){
     return this.http.post(this.url+'/Account/Login',login);
   }
-  logout(){
-    return this.http.get(this.url+'/Account/Logout');
-  }
   checkLogin(): boolean {
     if (localStorage.getItem('token') != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  checkRoleAdmin(): boolean {
+    if (localStorage.getItem('role') == 'Admin') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  checkRoleHR(): boolean {
+    if (localStorage.getItem('role') == 'HR') {
       return true;
     } else {
       return false;
@@ -73,11 +84,7 @@ export class DataService {
     });
   }
   editEmployee(employee:Employee): Observable<Employee>{
-    return this.http.put<Employee>(this.url+`/Employees/${employee.id}`,employee,{
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    });
+    return this.http.put<Employee>(this.url+`/Employees/${employee.id}`,employee);
   }
   deleteEmployee(employee:Employee):Observable<Employee>{
     return this.http.delete<Employee>(this.url+`/Employees/${employee.id}`,{

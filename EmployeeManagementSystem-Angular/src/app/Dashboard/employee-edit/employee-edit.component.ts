@@ -48,10 +48,12 @@ export class EmployeeEditComponent implements OnInit {
   }
 
   updateEmployee(){
+    console.log(this.employee);
     this.dataService.editEmployee(this.employee).subscribe(
       () => {
         console.log("Employee Edit");
-      }
+      },
+      (err)=>{console.log(err)}
     );
     this.route.navigate(['/dashboard/empList']);
   }

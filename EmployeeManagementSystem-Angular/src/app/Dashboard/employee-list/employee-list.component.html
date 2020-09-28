@@ -1,5 +1,8 @@
 <p>
-  <a class="btn btn-outline-primary mt-3" [routerLink]="['/dashboard/empAdd']" routerLinkActive="router-link-active">Add New Employee</a>
+  <a class="btn btn-outline-primary mt-3" [routerLink]="['/dashboard/empAdd']" routerLinkActive="router-link-active"
+    *ngIf="(dataService.checkRoleAdmin() || dataService.checkRoleHR())">Add New Employee</a>
+    <a class="btn btn-outline-primary mt-3" [routerLink]="['/dashboard/empEdit',emp.id]" routerLinkActive="router-link-active"
+    *ngIf="!(dataService.checkRoleAdmin() || dataService.checkRoleHR())">Update Your Profile</a>
 </p>
 <table class="table">
   <thead>
@@ -29,7 +32,7 @@
       <td>
         {{emp.department.name}}
       </td>
-      <td>
+      <td *ngIf="(dataService.checkRoleAdmin() || dataService.checkRoleHR())">
         <a class="btn btn-outline-primary btn-sm"
         [routerLink]="['/dashboard/empEdit',emp.id]">Edit</a> |
         <a class="btn btn-outline-danger btn-sm"

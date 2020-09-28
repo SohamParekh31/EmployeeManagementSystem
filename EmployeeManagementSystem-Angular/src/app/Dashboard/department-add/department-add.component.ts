@@ -22,9 +22,11 @@ export class DepartmentAddComponent implements OnInit {
   }
   saveDepartment(){
     this.dataService.addDepartment(this.department).subscribe(
-      () => console.log("Department Added")
+      () => {
+        console.log("Department Added");
+        this.route.navigate(['/dashboard/deptList']);
+      }
       );
-    console.log(this.department);
-    this.route.navigate(['/dashboard/deptList']);
+
   }
 }

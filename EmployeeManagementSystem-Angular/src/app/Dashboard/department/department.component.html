@@ -1,6 +1,6 @@
 <div class="row">
   <p>
-    <a class="btn btn-outline-primary mt-3" [routerLink]="['/dashboard/deptAdd']" routerLinkActive="router-link-active">Add New Department</a>
+    <a class="btn btn-outline-primary mt-3" [routerLink]="['/dashboard/deptAdd']" routerLinkActive="router-link-active" *ngIf="dataService.checkRoleAdmin()">Add New Department</a>
   </p>
     <table class="table">
       <thead>
@@ -14,7 +14,7 @@
           <td>
             {{dept.name}}
           </td>
-          <td>
+          <td *ngIf="dataService.checkRoleAdmin()">
             <a class="btn btn-outline-primary btn-sm"
             [routerLink]="['/dashboard/deptEdit',dept.departmentId]">Edit</a> |
             <a class="btn btn-outline-danger btn-sm"

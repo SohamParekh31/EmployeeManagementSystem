@@ -45,12 +45,6 @@ namespace EmployeeManagementSystem.Controllers
         }
         
 
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        // POST: Departments/Create
         [HttpPost]
         public ActionResult Create(Department department)
         {
@@ -59,12 +53,6 @@ namespace EmployeeManagementSystem.Controllers
             return Ok(department);
         }
 
-        //GET: Departments/Edit/5
-        //public IActionResult Edit(int id)
-        //{
-        //    Department department = _dept.getDepartmentById(id);
-        //    return View(department);
-        //}
 
         ////POST: Departments/Edit/5
         [HttpPut("{id}")]
@@ -74,19 +62,13 @@ namespace EmployeeManagementSystem.Controllers
             return Ok(department);
         }
 
-        // GET: Departments/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    Department department = _dept.getDepartmentById(id);
-        //    return View(department);
-        //}
 
         ////// POST: Departments/Delete/5
         [HttpDelete("{id}"), ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
             _dept.DeleteDepartment(id);
-            return RedirectToAction("Index");
+            return Ok();
         }
     }
 }

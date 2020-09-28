@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using EmployeeManagementSystem.Models;
 using EmployeeManagementSystem.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,11 +18,13 @@ namespace EmployeeManagementSystem.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
+        private readonly AppDbContext context;
 
-        public AccountController(UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager,AppDbContext context)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.context = context;
         }
         [HttpGet]
         [Route("Logout")]
@@ -70,7 +73,7 @@ namespace EmployeeManagementSystem.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("Login")]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -78,13 +81,17 @@ namespace EmployeeManagementSystem.Controllers
                 if(loggedInUser != null)
                 {
                     var result = await signInManager.PasswordSignInAsync(loggedInUser.UserName, model.Password, model.RememberMe, false);
-
+                    bool isAdmin = await userManager.IsInRoleAsync(loggedInUser, "Admin");
+                    bool isHr = await userManager.IsInRoleAsync(loggedInUser, "HR");
+                    bool isEmployee = await userManager.IsInRoleAsync(loggedInUser, "Employee");
                     if (result.Succeeded)
                     {
-                        if (!string.IsNullOrEmpty(returnUrl))
-                            return Redirect(returnUrl);
-                        else
-                            return Ok();
+                        if (isEmployee)
+                            return Ok(new { Role = "Employee" });
+                        if(isAdmin)
+                            return Ok(new { Role="Admin" });
+                        if(isHr)
+                            return Ok(new { Role = "HR" });
                     }
                     ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
                 }

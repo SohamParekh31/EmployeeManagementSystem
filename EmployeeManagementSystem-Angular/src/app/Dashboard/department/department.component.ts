@@ -9,7 +9,7 @@ import { DataService } from 'src/app/shared/data.service';
 })
 export class DepartmentComponent implements OnInit {
   departments:Department[];
-  constructor(private dataService:DataService) {
+  constructor(public dataService:DataService) {
     this.dataService.getDepartments().subscribe(
       depart => {
         this.departments = depart;
@@ -25,10 +25,11 @@ export class DepartmentComponent implements OnInit {
       this.dataService.deleteDepartment(department).subscribe(
         ()=>{
           console.log("Department Deleted");
+          window.location.reload();
         }
       )
     }
-    window.location.reload();
+
   }
 
 }

@@ -36,8 +36,9 @@ export class DepartmentEditComponent implements OnInit {
     this.dataService.editDepartment(this.department).subscribe(
       ()=>{
         console.log("Department Updates Successfully!!");
+        this.route.navigate(['/dashboard/deptList']);
       }
     );
-      this.route.navigate(['/dashboard/deptList']);
+
   }
 }

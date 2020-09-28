@@ -10,12 +10,28 @@ import { DataService } from 'src/app/shared/data.service';
 export class EmployeeListComponent implements OnInit {
 
   employees:Employee[];
-  constructor(private dataService:DataService) { }
+  emp:Employee= {
+    id:0,
+    name:null,
+    surname:null,
+    address:null,
+    qualification:null,
+    contact_Number:null,
+    email:null,
+    departmentId: 0,
+  };
+  constructor(public dataService:DataService) { }
 
   ngOnInit(): void {
+    var empEmail = localStorage.getItem('email');
+    //console.log(role);
     this.dataService.getEmployees().subscribe(
       emp => {
         this.employees = emp;
+        if(localStorage.getItem('role')=='Employee'){
+          this.emp = this.employees.find(e => e.email == empEmail);
+        console.log(this.emp);
+        }
       }
     );
   }
@@ -24,10 +40,11 @@ export class EmployeeListComponent implements OnInit {
       this.dataService.deleteEmployee(employee).subscribe(
         ()=>{
           console.log("Employee Deleted");
+          window.location.reload();
         }
       )
     }
-    window.location.reload();
+
   }
 
 }

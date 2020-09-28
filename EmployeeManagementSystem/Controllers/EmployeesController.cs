@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using EmployeeManagementSystem.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagementSystem.Controllers
 {
@@ -41,17 +42,14 @@ namespace EmployeeManagementSystem.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-
-            //ViewBag.Message = userManager.GetUserAsync(HttpContext.User).Result;
             var user = userManager.GetUserAsync(HttpContext.User).Result;
-            //ViewBag.Message = userManager.GetRolesAsync(user).Result[0];
+
+            var emp = context.employees.Include(e => e.department);
             if (User.IsInRole("Employee"))
             {
-
-                var emp = _employee.getEmployees().ToList();
-                var employee = emp.Find(e => e.Email == user.Email);
-                var employeeList = emp.Where(e => e.DepartmentId == employee.DepartmentId);
-                return Ok(employeeList);
+                var dept = emp.Where(e => e.Email == User.Identity.Name).First().department.Name;
+                var sameDeptEmployee = emp.Where(e => e.department.Name == dept);
+                return Ok(new { EmployeeList = sameDeptEmployee.ToList() });
             }
             return Ok(_employee.getEmployees());
         }
@@ -69,13 +67,6 @@ namespace EmployeeManagementSystem.Controllers
             return employees;
         }
 
-
-        // GET: Employees/Create
-        //public IActionResult Create()
-        //{
-        //    ViewBag.DeptName = _department.getDepartments();
-        //    return View();
-        //}
 
         // POST: Employees/Create
         [HttpPost]
@@ -100,7 +91,7 @@ namespace EmployeeManagementSystem.Controllers
                         employee.Email = emailChange;
                         await userManager.AddToRoleAsync(user, "Employee");
                         _employee.InsertEmployee(employee);
-                        return RedirectToAction(nameof(Index));
+                        return Ok();
                     }
                     foreach (var error in result.Errors)
                     {
@@ -117,7 +108,7 @@ namespace EmployeeManagementSystem.Controllers
                         employee.Email = email;
                         await userManager.AddToRoleAsync(user, "Employee");
                         _employee.InsertEmployee(employee);
-                        return RedirectToAction(nameof(Index));
+                        return Ok();
                     }
                     foreach (var error in result.Errors)
                     {
@@ -126,24 +117,9 @@ namespace EmployeeManagementSystem.Controllers
                 }
                 
             }
-            return Ok(employee);
+            return BadRequest(employee);
         }
 
-        // GET: Employees/Edit/5
-        //public IActionResult Edit(int id)
-        //{
-        //    ViewBag.DeptName = _department.getDepartments();
-        //    if (User.IsInRole("Employee"))
-        //    {
-        //        var user = userManager.GetUserAsync(HttpContext.User).Result;
-        //        //ViewBag.DeptName = _department.getDepartments();
-        //        var emp = _employee.getEmployees().ToList();
-        //        Employee employe = emp.Find(e => e.Email == user.Email);
-        //        return View(employe);
-        //    }
-        //    Employee employee = _employee.getEmployeeById(id);
-        //    return View(employee);
-        //}
 
         // POST: Employees/Edit/5
         [HttpPut("{id}")]
@@ -152,7 +128,7 @@ namespace EmployeeManagementSystem.Controllers
             try
             {
                 _employee.UpdateEmployee(id,employee);
-                return RedirectToAction("Index");
+                return Ok();
             }
             catch
             {
@@ -160,12 +136,6 @@ namespace EmployeeManagementSystem.Controllers
             }
         }
 
-        // GET: Employees/Delete/5
-        //public IActionResult Delete(int id)
-        //{
-        //    Employee employee = _employee.getEmployeeById(id);
-        //    return View(employee);
-        //}
 
         // POST: Employees/Delete/5
         [HttpDelete("{id}"), ActionName("Delete")]
@@ -177,7 +147,7 @@ namespace EmployeeManagementSystem.Controllers
             context.employees.Remove(emp);
             context.SaveChanges();
             await hubContext.Clients.All.SendAsync("RefreshEmployee");
-            return RedirectToAction("Index");
+            return Ok();
         }
     }
 }
