@@ -16,8 +16,8 @@ export class DashboardComponent implements OnInit {
   }
   logout(){
     localStorage.removeItem('token');
+    localStorage.removeItem('email');
     localStorage.removeItem('role');
     window.location.href = '/login';
-
   }
 }

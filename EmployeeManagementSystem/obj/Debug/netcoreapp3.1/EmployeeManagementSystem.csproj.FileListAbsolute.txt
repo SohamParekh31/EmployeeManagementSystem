@@ -174,5 +174,6 @@ D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\obj\Debug\netcoreapp
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\bin\Debug\netcoreapp3.1\libman.json
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\bin\Debug\netcoreapp3.1\System.Net.WebSockets.WebSocketProtocol.dll
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\bin\Debug\netcoreapp3.1\package-lock.json
+D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\obj\Debug\netcoreapp3.1\EmployeeManagementSystem.csproj.CoreCompileInputs.cache
 D:\CSharp\EmployeeManagementSystem\EmployeeManagementSystem\obj\Debug\netcoreapp3.1\EmployeeManagementSystem.MvcApplicationPartsAssemblyInfo.cache

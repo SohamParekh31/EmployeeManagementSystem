@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { Employee } from 'src/app/models/Employee';
 import { DataService } from 'src/app/shared/data.service';
 
@@ -21,7 +22,7 @@ export class EmployeeListComponent implements OnInit {
     departmentId: 0,
   };
   employssWithSameDept:Employee[];
-  constructor(public dataService:DataService) { }
+  constructor(public dataService:DataService,private toastr:ToastrService) { }
 
   ngOnInit(): void {
     var empEmail = localStorage.getItem('email');
@@ -42,7 +43,7 @@ export class EmployeeListComponent implements OnInit {
     if(confirm(`Are you sure you want to delete ${employee.name} Employee?`)){
       this.dataService.deleteEmployee(employee).subscribe(
         ()=>{
-          console.log("Employee Deleted");
+          this.toastr.success(`${employee.name} Employee Deleted`);
           window.location.reload();
         }
       )

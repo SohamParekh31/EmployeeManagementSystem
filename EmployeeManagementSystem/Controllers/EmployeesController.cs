@@ -42,15 +42,6 @@ namespace EmployeeManagementSystem.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var user = userManager.GetUserAsync(HttpContext.User).Result;
-
-            var emp = context.employees.Include(e => e.department);
-            if (User.IsInRole("Employee"))
-            {
-                var dept = emp.Where(e => e.Email == User.Identity.Name).First().department.Name;
-                var sameDeptEmployee = emp.Where(e => e.department.Name == dept);
-                return Ok(new { EmployeeList = sameDeptEmployee.ToList() });
-            }
             return Ok(_employee.getEmployees());
         }
 

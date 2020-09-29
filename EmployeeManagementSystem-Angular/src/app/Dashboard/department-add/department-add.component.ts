@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from "@angular/forms";
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Department } from 'src/app/models/Department';
 import { DataService } from 'src/app/shared/data.service';
 
@@ -15,7 +16,7 @@ export class DepartmentAddComponent implements OnInit {
     departmentId: 0,
     name: null,
   };
-  constructor(private dataService:DataService,private route:Router) { }
+  constructor(private dataService:DataService,private route:Router,private toastr:ToastrService) { }
 
   ngOnInit(): void {
 
@@ -23,7 +24,7 @@ export class DepartmentAddComponent implements OnInit {
   saveDepartment(){
     this.dataService.addDepartment(this.department).subscribe(
       () => {
-        console.log("Department Added");
+        this.toastr.success(`${this.department.name} Department Added`);
         this.route.navigate(['/dashboard/deptList']);
       }
       );

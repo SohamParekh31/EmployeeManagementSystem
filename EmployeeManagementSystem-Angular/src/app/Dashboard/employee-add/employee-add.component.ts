@@ -4,6 +4,7 @@ import { Employee } from 'src/app/models/Employee';
 import { DataService } from 'src/app/shared/data.service';
 import { NgForm } from "@angular/forms";
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-employee-add',
@@ -21,7 +22,7 @@ export class EmployeeAddComponent implements OnInit {
     contact_Number:null,
     departmentId: 0,
   };
-  constructor(private dataService:DataService,private route:Router) { }
+  constructor(private dataService:DataService,private route:Router,private toastr:ToastrService) { }
 
   ngOnInit(): void {
     this.dataService.getDepartments().subscribe(
@@ -33,7 +34,7 @@ export class EmployeeAddComponent implements OnInit {
   saveEmployee(){
     this.dataService.addEmployee(this.employee).subscribe(
       ()=>{
-        console.log(`${this.employee.name} Employee Added`);
+        this.toastr.success(`${this.employee.name} Employee Added`);
         this.route.navigate(['/dashboard/empList']);
       }
     );

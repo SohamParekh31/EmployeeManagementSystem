@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from "@angular/forms";
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Department } from 'src/app/models/Department';
 import { Employee } from 'src/app/models/Employee';
 import { DataService } from 'src/app/shared/data.service';
@@ -23,7 +24,8 @@ export class EmployeeEditComponent implements OnInit {
     departmentId: 0,
   };
   ID:number;
-  constructor(private dataService:DataService,private activateRoute:ActivatedRoute,private route:Router) { }
+  constructor(private dataService:DataService,private activateRoute:ActivatedRoute,private route:Router,
+              private toastr:ToastrService) { }
 
   ngOnInit(): void {
     this.activateRoute.paramMap.subscribe(
@@ -48,10 +50,9 @@ export class EmployeeEditComponent implements OnInit {
   }
 
   updateEmployee(){
-    console.log(this.employee);
     this.dataService.editEmployee(this.employee).subscribe(
       () => {
-        console.log("Employee Edit");
+        this.toastr.success(`${this.employee.name} Employee Edit`);
       },
       (err)=>{console.log(err)}
     );

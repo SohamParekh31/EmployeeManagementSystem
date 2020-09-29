@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EmployeeManagementSystem.Models;
@@ -9,6 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EmployeeManagementSystem.Controllers
 {
@@ -19,15 +24,19 @@ namespace EmployeeManagementSystem.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly AppDbContext context;
+        private readonly IOptions<ApplicationSettings> appSettings;
 
-        public AccountController(UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager,AppDbContext context)
+        public AccountController(UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager,AppDbContext context
+                                    , IOptions<ApplicationSettings> appSettings)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.context = context;
+            this.appSettings = appSettings;
         }
         [HttpGet]
         [Route("Logout")]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
@@ -81,23 +90,32 @@ namespace EmployeeManagementSystem.Controllers
                 if(loggedInUser != null)
                 {
                     var result = await signInManager.PasswordSignInAsync(loggedInUser.UserName, model.Password, model.RememberMe, false);
-                    bool isAdmin = await userManager.IsInRoleAsync(loggedInUser, "Admin");
-                    bool isHr = await userManager.IsInRoleAsync(loggedInUser, "HR");
-                    bool isEmployee = await userManager.IsInRoleAsync(loggedInUser, "Employee");
+                    
                     if (result.Succeeded)
                     {
-                        if (isEmployee)
-                            return Ok(new { Role = "Employee" });
-                        if(isAdmin)
-                            return Ok(new { Role="Admin" });
-                        if(isHr)
-                            return Ok(new { Role = "HR" });
+                        IdentityOptions _options = new IdentityOptions();
+                        var role = await userManager.GetRolesAsync(loggedInUser);
+                        var tokenDescriptor = new SecurityTokenDescriptor
+                        {
+                            Subject = new ClaimsIdentity(new Claim[]
+                             {
+                                     new Claim("UserID", loggedInUser.Id.ToString()),
+                                     new Claim(_options.ClaimsIdentity.RoleClaimType,role.FirstOrDefault())
+                             }),
+                            Expires = DateTime.UtcNow.AddDays(1),
+                            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Value.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
+                        };
+                        var tokenHandler = new JwtSecurityTokenHandler();
+                        var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+                        var token = tokenHandler.WriteToken(securityToken);
+
+                        return Ok(new {token});
+                        
                     }
-                    ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
                 }
                 
             }
-            return BadRequest();
+            return BadRequest(new { message = "Username or password is incorrect." });
         }
         [HttpGet]
         [AllowAnonymous]

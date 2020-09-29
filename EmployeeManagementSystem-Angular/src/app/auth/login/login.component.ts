@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Employee } from 'src/app/models/Employee';
 import { Login } from 'src/app/models/login';
 import { DataService } from 'src/app/shared/data.service';
@@ -18,7 +19,7 @@ export class LoginComponent implements OnInit {
   };
   employee:Employee[];
   constructor(
-    private router: Router,private dataService:DataService
+    private router: Router,private dataService:DataService,private toastr:ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -36,19 +37,21 @@ export class LoginComponent implements OnInit {
     //console.log(emp);
     this.dataService.login(this.login).subscribe(
       (res:any) => {
-        console.log("Login Successfull");
-        //console.log(res.role);
-
-        localStorage.setItem('role',res.role);
+        localStorage.setItem('token',res.token);
+        var token = localStorage.getItem('token');
+        const payLoad = JSON.parse(window.atob(token.split('.')[1]));
+        localStorage.setItem('role',payLoad['role']);
         if(localStorage.getItem('role')=='Employee'){
           var emp = this.employee.find(e => e.email === this.login.email);
           localStorage.setItem('email',emp.email);
         }
         this.router.navigate(['/dashboard/empList']);
-        localStorage.setItem('token','login_successfull');
       },
       err => {
-        console.log("Invalid UserId or Password");
+        if(err.status === 400){
+          this.toastr.warning("Invalid UserId or Password");
+        }
+
       }
     );
   }
