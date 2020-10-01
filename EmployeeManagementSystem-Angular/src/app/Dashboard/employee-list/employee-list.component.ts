@@ -9,7 +9,7 @@ import { DataService } from 'src/app/shared/data.service';
   styleUrls: ['./employee-list.component.css']
 })
 export class EmployeeListComponent implements OnInit {
-
+  p:number = 1;
   employees:Employee[];
   emp:Employee= {
     id:0,

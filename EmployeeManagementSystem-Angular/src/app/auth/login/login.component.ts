@@ -12,7 +12,7 @@ import { DataService } from 'src/app/shared/data.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
+  
   login: Login = {
     email:null,
     password:null

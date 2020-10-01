@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from '../shared/data.service';
+import * as signalR from '@aspnet/signalr';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +15,7 @@ export class DashboardComponent implements OnInit {
   constructor(public dataService:DataService,private route:Router,private http:HttpClient) { }
 
   ngOnInit(): void {
+
   }
   logout(){
     localStorage.removeItem('token');

@@ -34,6 +34,12 @@ namespace EmployeeManagementSystem.Controllers
             this.context = context;
             this.appSettings = appSettings;
         }
+        [AllowAnonymous]
+        [Route("chatHub")]
+        public IActionResult post()
+        {
+            return Ok();
+        }
         [HttpGet]
         [Route("Logout")]
         [AllowAnonymous]
@@ -93,14 +99,13 @@ namespace EmployeeManagementSystem.Controllers
                     
                     if (result.Succeeded)
                     {
-                        IdentityOptions _options = new IdentityOptions();
                         var role = await userManager.GetRolesAsync(loggedInUser);
                         var tokenDescriptor = new SecurityTokenDescriptor
                         {
                             Subject = new ClaimsIdentity(new Claim[]
                              {
                                      new Claim("UserID", loggedInUser.Id.ToString()),
-                                     new Claim(_options.ClaimsIdentity.RoleClaimType,role.FirstOrDefault())
+                                     new Claim("role",role.FirstOrDefault())
                              }),
                             Expires = DateTime.UtcNow.AddDays(1),
                             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Value.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
@@ -117,60 +122,24 @@ namespace EmployeeManagementSystem.Controllers
             }
             return BadRequest(new { message = "Username or password is incorrect." });
         }
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult FindEmail()
-        {
-            return View();
-        }
+        
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> FindEmail(FindEmailViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var loggedInUser = await userManager.FindByEmailAsync(model.Email);
-                if (loggedInUser != null)
-                    return RedirectToAction("ForgetPassword", new RouteValueDictionary(
-                                                new { controller = "Account", action = "ForgetPassword", loggedInUser.Id }));
-                ViewBag.Message = "User Not Found";
-            }
-            return View();
-        }
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> ForgetPassword(string id)
-        {
-            var user = await userManager.FindByIdAsync(id);
-            var token = userManager.GeneratePasswordResetTokenAsync(user).Result;
-            var forgetresetpassword = new ForgetResetPassword
-            {
-                id = user.Id,
-                Token = token
-            };
-            return View(forgetresetpassword);
-        }
-        [HttpPost]
-        [AllowAnonymous]
+        [Route("ForgetResetPassword")]
         public async Task<IActionResult> ForgetPasswordAsync(ForgetResetPassword model)
         {
             if (ModelState.IsValid)
             {
-                var user = await userManager.FindByIdAsync(model.id);
-                var changePassword = await userManager.ResetPasswordAsync(user,model.Token,model.Password);
+                var user = await userManager.FindByEmailAsync(model.email);
+                var token = userManager.GeneratePasswordResetTokenAsync(user).Result;
+                var changePassword = await userManager.ResetPasswordAsync(user,token,model.password);
 
                 if (changePassword.Succeeded)
                 {
-                    ViewBag.Message = "Password Changed Successfully";
-                    return RedirectToAction("Login", "Account");
-                }
-                ViewBag.Message = "Error while resetting the password!";
-                foreach (var item in changePassword.Errors)
-                {
-                    ModelState.AddModelError("", item.Description);
+                    return Ok();
                 }
             }
-            return View(model);
+            return BadRequest(new { message = "Email Not Found!!" });
         }
     }
 }

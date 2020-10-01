@@ -28,7 +28,7 @@ namespace EmployeeManagementSystem.Models
         public void InsertDepartment(Department department)
         {
             _context.departments.Add(department);
-            hubContext.Clients.Users("334cd12d-3af6-437f-b32f-1a231dbea8df").SendAsync("departmentAdded", department.Name + " Department Added");
+            hubContext.Clients.All.SendAsync("departmentAdded", department.Name + " Department Added");
             _context.SaveChanges();
             hubContext.Clients.All.SendAsync("Refresh");
 

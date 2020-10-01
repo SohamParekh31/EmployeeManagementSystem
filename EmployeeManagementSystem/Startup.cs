@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using System;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace EmployeeManagementSystem
 {
@@ -42,17 +43,10 @@ namespace EmployeeManagementSystem
                                 .Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
-            services.AddSignalR();
+            
             services.AddScoped<IDepartment,MockDepartmentList>();
             services.AddScoped<IEmployee,MockEmployeeList>();
-            services.AddCors(options =>
-            {
-                options.AddPolicy("foo",
-                builder =>
-                {
-                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-                });
-            });
+            
 
             var key = Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWT_Secret"].ToString());
 
@@ -73,7 +67,24 @@ namespace EmployeeManagementSystem
                     ClockSkew = TimeSpan.Zero
                 };
             });
+            
+            var corsBuilder = new CorsPolicyBuilder();
 
+
+            //corsBuilder.AllowAnyOrigin(); // For anyone access.
+            corsBuilder.WithOrigins(new[] { "http://localhost:4200" }); // for a specific url. Don't add a forward slash on the end!
+            corsBuilder.AllowAnyHeader();
+            corsBuilder.AllowCredentials();
+            corsBuilder.AllowAnyMethod();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
+            });
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,11 +100,12 @@ namespace EmployeeManagementSystem
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseCors("foo");
+            
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseCors("SiteCorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

@@ -4,6 +4,7 @@ import { Department } from '../models/Department';
 import { Observable, throwError, of } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Employee } from '../models/Employee';
+import { ForgetResetPassword } from '../models/ForgetResetPassword';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,9 @@ export class DataService {
 
   login(login){
     return this.http.post(this.url+'/Account/Login',login);
+  }
+  forgetResetPassword(forgetResetPassowrd:ForgetResetPassword){
+    return this.http.post(this.url+'/Account/ForgetResetPassword',forgetResetPassowrd);
   }
   checkLogin(): boolean {
     if (localStorage.getItem('token') != null) {

@@ -10,6 +10,7 @@ import { EmployeeAddComponent } from './employee-add/employee-add.component';
 import { DepartmentEditComponent } from './department-edit/department-edit.component';
 import { DepartmentAddComponent } from './department-add/department-add.component';
 import { AuthGuard } from '../auth/auth.guard';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 
@@ -26,6 +27,7 @@ import { AuthGuard } from '../auth/auth.guard';
   imports: [
     CommonModule,
     FormsModule,
+    NgxPaginationModule,
     RouterModule.forChild([
       { path: '',redirectTo: '/deptList', pathMatch: 'full',canActivate:[AuthGuard]},
       { path: 'empList', component: EmployeeListComponent,canActivate:[AuthGuard] },

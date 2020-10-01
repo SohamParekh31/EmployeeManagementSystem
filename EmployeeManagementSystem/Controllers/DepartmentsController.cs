@@ -48,8 +48,7 @@ namespace EmployeeManagementSystem.Controllers
         [HttpPost]
         public ActionResult Create(Department department)
         {
-            _context.departments.Add(department);
-            _context.SaveChanges();
+            _dept.InsertDepartment(department);
             return Ok(department);
         }
 

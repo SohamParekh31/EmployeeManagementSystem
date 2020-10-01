@@ -9,6 +9,7 @@ import { DataService } from 'src/app/shared/data.service';
   styleUrls: ['./department.component.css']
 })
 export class DepartmentComponent implements OnInit {
+  p:number = 1;
   departments:Department[];
   constructor(public dataService:DataService,private toastr:ToastrService) {
     this.dataService.getDepartments().subscribe(
