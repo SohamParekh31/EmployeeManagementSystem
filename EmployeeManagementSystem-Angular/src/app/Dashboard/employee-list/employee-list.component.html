@@ -34,9 +34,9 @@
       </td>
       <td *ngIf="(dataService.checkRoleAdmin() || dataService.checkRoleHR())">
         <a class="btn btn-outline-primary btn-sm"
-        [routerLink]="['/dashboard/empEdit',emp.id]">Edit</a> |
+        [routerLink]="['/dashboard/empEdit',emp.id]"><i class="far fa-edit"></i></a> |
         <a class="btn btn-outline-danger btn-sm"
-        (click)="deleteEmployee(emp)">Delete</a>
+        (click)="deleteEmployee(emp)"><i class="far fa-trash-alt"></i></a>
       </td>
     </tr>
   </tbody>

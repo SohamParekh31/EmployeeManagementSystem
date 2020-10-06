@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using EmployeeManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -15,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using System;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem
 {
@@ -33,7 +33,20 @@ namespace EmployeeManagementSystem
             services.Configure<ApplicationSettings>(Configuration.GetSection("ApplicationSettings"));
             services.AddDbContext<AppDbContext>(options =>
                                  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
+            var corsBuilder = new CorsPolicyBuilder();
+            //corsBuilder.AllowAnyOrigin(); // For anyone access.
+            corsBuilder.WithOrigins(new[] { "http://localhost:4200" }); // for a specific url. Don't add a forward slash on the end!
+            corsBuilder.AllowAnyHeader();
+            corsBuilder.AllowCredentials();
+            corsBuilder.AllowAnyMethod();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
+            });
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders(); 
             services.AddControllersWithViews();
             services.AddMvc(config =>
@@ -66,25 +79,26 @@ namespace EmployeeManagementSystem
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero
                 };
-            });
-            
-            var corsBuilder = new CorsPolicyBuilder();
+                x.Events = new JwtBearerEvents 
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
 
-
-            //corsBuilder.AllowAnyOrigin(); // For anyone access.
-            corsBuilder.WithOrigins(new[] { "http://localhost:4200" }); // for a specific url. Don't add a forward slash on the end!
-            corsBuilder.AllowAnyHeader();
-            corsBuilder.AllowCredentials();
-            corsBuilder.AllowAnyMethod();
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
+                        // If the request is for our hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/chatHub")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
-            services.AddSignalR(options =>
-            {
-                options.EnableDetailedErrors = true;
-            });
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,12 +114,11 @@ namespace EmployeeManagementSystem
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
 
+            app.UseCors("SiteCorsPolicy");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseCors("SiteCorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

@@ -43,24 +43,17 @@ namespace EmployeeManagementSystem.Models
         public void InsertEmployee(Employee employee)
         {
             _context.Add(employee);
-            foreach (var item in getEmployees())
-            {
-                if(item.DepartmentId == employee.DepartmentId)
-                {
-                    var empnotification = userManager.FindByEmailAsync(item.Email).Result;
-                    hubContext.Clients.User(empnotification.Id).SendAsync("addEmployee", employee.Name + " " + employee.Surname + " employee Added");
-                }
-            }
+            var dept = _context.departments.Where(d => d.DepartmentId == employee.DepartmentId).First().Name;
+            var grpName = "Employee" + dept;
+            hubContext.Clients.Group(grpName).SendAsync("addEmployee", employee.Name + " " + employee.Surname + " employee Added");
             _context.SaveChanges();
-            hubContext.Clients.All.SendAsync("RefreshEmployee");
         }
 
         public void UpdateEmployee(int id,Employee employee)
         {
             _context.Update(employee);
-            hubContext.Clients.Users("334cd12d-3af6-437f-b32f-1a231dbea8df", "4f6e7d79-14d6-4041-9244-cf6012f35cc1").SendAsync("employeeUpdate", employee.Name+" " +employee.Surname + " changed profile");
+            hubContext.Clients.Groups("Admin","HR").SendAsync("employeeUpdate", employee.Name+" " +employee.Surname + " changed profile");
             _context.SaveChanges();
-            hubContext.Clients.All.SendAsync("RefreshEmployee");
         }
     }
 }

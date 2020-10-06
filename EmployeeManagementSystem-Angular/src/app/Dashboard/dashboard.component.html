@@ -10,10 +10,20 @@
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
+      <li *ngIf="notification!=null">
+        <div class="dropdown">
+          <button class="dropbtn">Notification
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a>{{notification}}</a>
+          </div>
+        </div>
+      </li>
       <li class="nav-item">
         <form (ngSubmit)="logout()">
             <button type="submit" style="width:auto"
-                    class="nav-link btn btn-link py-0">
+                    class="nav-link btn btn-link py-0" title="LogOut">
                     <i class="fas fa-sign-out-alt"></i>
             </button>
         </form>

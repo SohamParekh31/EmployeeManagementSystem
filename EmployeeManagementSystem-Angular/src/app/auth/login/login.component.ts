@@ -12,7 +12,7 @@ import { DataService } from 'src/app/shared/data.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  
+
   login: Login = {
     email:null,
     password:null
@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token',res.token);
         var token = localStorage.getItem('token');
         const payLoad = JSON.parse(window.atob(token.split('.')[1]));
+        localStorage.setItem('UserID',payLoad['UserID']);
         localStorage.setItem('role',payLoad['role']);
         if(localStorage.getItem('role')=='Employee'){
           var emp = this.employee.find(e => e.email === this.login.email);

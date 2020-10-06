@@ -23,15 +23,15 @@ export class DepartmentAddComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    var connection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:44318/chatHub')
-      .build();
-    connection.start().then(function () {
-      console.log('connected');
-      connection.on('departmentAdded',function(message){
-        console.log(message);
-      });
-    });
+    // var connection = new signalR.HubConnectionBuilder()
+    //   .withUrl('https://localhost:44318/chatHub')
+    //   .build();
+    // connection.start().then(function () {
+    //   console.log('connected');
+    //   connection.on('departmentAdded',function(message){
+    //     console.log(message);
+    //   });
+    // });
   }
 
   saveDepartment() {

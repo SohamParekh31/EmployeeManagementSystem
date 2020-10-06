@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -25,14 +26,16 @@ namespace EmployeeManagementSystem.Controllers
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly AppDbContext context;
         private readonly IOptions<ApplicationSettings> appSettings;
+        private readonly IConfiguration _configuration;
 
-        public AccountController(UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager,AppDbContext context
-                                    , IOptions<ApplicationSettings> appSettings)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, AppDbContext context
+                                    , IOptions<ApplicationSettings> appSettings, IConfiguration configuration)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.context = context;
             this.appSettings = appSettings;
+            _configuration = configuration;
         }
         [AllowAnonymous]
         [Route("chatHub")]
@@ -93,36 +96,65 @@ namespace EmployeeManagementSystem.Controllers
             if (ModelState.IsValid)
             {
                 var loggedInUser = await userManager.FindByEmailAsync(model.Email);
-                if(loggedInUser != null)
+                if (loggedInUser != null && await userManager.CheckPasswordAsync(loggedInUser, model.Password))
                 {
-                    var result = await signInManager.PasswordSignInAsync(loggedInUser.UserName, model.Password, model.RememberMe, false);
-                    
-                    if (result.Succeeded)
-                    {
-                        var role = await userManager.GetRolesAsync(loggedInUser);
-                        var tokenDescriptor = new SecurityTokenDescriptor
-                        {
-                            Subject = new ClaimsIdentity(new Claim[]
-                             {
-                                     new Claim("UserID", loggedInUser.Id.ToString()),
-                                     new Claim("role",role.FirstOrDefault())
-                             }),
-                            Expires = DateTime.UtcNow.AddDays(1),
-                            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Value.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
-                        };
-                        var tokenHandler = new JwtSecurityTokenHandler();
-                        var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-                        var token = tokenHandler.WriteToken(securityToken);
+                    //var result = await signInManager.PasswordSignInAsync(loggedInUser.UserName, model.Password, model.RememberMe, false);
 
-                        return Ok(new {token});
-                        
+
+                    var userRoles = await userManager.GetRolesAsync(loggedInUser);
+
+                    var authClaims = new List<Claim>
+                        {
+                             new Claim("name", loggedInUser.UserName),
+                    new Claim(ClaimTypes.Name, loggedInUser.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        };
+
+                    foreach (var userRole in userRoles)
+                    {
+                        authClaims.Add(new Claim("role", userRole));
+                        authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                     }
+
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["ApplicationSettings:JWT_Secret"]));
+
+                    var token = new JwtSecurityToken(
+                        issuer: _configuration["ApplicationSettings:ValidIssuer"],
+                        audience: _configuration["ApplicationSettings:ValidAudience"],
+                        expires: DateTime.Now.AddHours(3),
+                        claims: authClaims,
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                        );
+
+                    return Ok(new
+                    {
+                        token = new JwtSecurityTokenHandler().WriteToken(token),
+                        expiration = token.ValidTo
+                    });
+                    //var role = await userManager.GetRolesAsync(loggedInUser);
+
+                    //var tokenDescriptor = new SecurityTokenDescriptor
+                    //{
+                    //    Subject = new ClaimsIdentity(new Claim[]
+                    //     {
+                    //             new Claim("UserID", loggedInUser.Id.ToString()),
+                    //             new Claim("role",role.FirstOrDefault()),
+                    //     }),
+                    //    Expires = DateTime.UtcNow.AddHours(2),
+                    //    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Value.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
+                    //};
+                    //var tokenHandler = new JwtSecurityTokenHandler();
+                    //var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+                    //var token = tokenHandler.WriteToken(securityToken);
+
+                    //return Ok(new {token});
+
                 }
-                
+
             }
             return BadRequest(new { message = "Username or password is incorrect." });
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         [Route("ForgetResetPassword")]
@@ -132,7 +164,7 @@ namespace EmployeeManagementSystem.Controllers
             {
                 var user = await userManager.FindByEmailAsync(model.email);
                 var token = userManager.GeneratePasswordResetTokenAsync(user).Result;
-                var changePassword = await userManager.ResetPasswordAsync(user,token,model.password);
+                var changePassword = await userManager.ResetPasswordAsync(user, token, model.password);
 
                 if (changePassword.Succeeded)
                 {

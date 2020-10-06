@@ -27,7 +27,7 @@ export class DepartmentComponent implements OnInit {
       this.dataService.deleteDepartment(department).subscribe(
         ()=>{
           this.toastr.success(`${department.name} Department Deleted`);
-          window.location.reload();
+          //window.location.reload();
         }
       )
     }
