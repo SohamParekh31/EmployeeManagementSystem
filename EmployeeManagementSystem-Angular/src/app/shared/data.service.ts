@@ -5,15 +5,34 @@ import { Observable, throwError, of } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Employee } from '../models/Employee';
 import { ForgetResetPassword } from '../models/ForgetResetPassword';
+import * as signalR from '@aspnet/signalr';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-
+  public data: any;
+  private hubConnection: signalR.HubConnection;
+  loginToken: string;
   url = 'https://localhost:44318';
-  constructor(private http:HttpClient) { }
-
+  constructor(private http:HttpClient) {
+    this.loginToken = localStorage.getItem('token');
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl('https://localhost:44318/chatHub', { accessTokenFactory: () => this.loginToken })
+      .build();
+    this.hubConnection
+      .start()
+      .then(() => {
+        console.log("Connected");
+        this.hubConnection.on('departmentAdded',(data)=>{
+          this.data = data;
+        });
+        this.hubConnection.on('departmentDelete',(data)=>{
+          this.data = data;
+        });
+      })
+      .catch(err => console.log('Error while starting connection: ' + err));
+   }
   login(login){
     return this.http.post(this.url+'/Account/Login',login);
   }

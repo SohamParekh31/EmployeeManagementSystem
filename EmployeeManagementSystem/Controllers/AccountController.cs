@@ -129,25 +129,7 @@ namespace EmployeeManagementSystem.Controllers
                     return Ok(new
                     {
                         token = new JwtSecurityTokenHandler().WriteToken(token),
-                        expiration = token.ValidTo
                     });
-                    //var role = await userManager.GetRolesAsync(loggedInUser);
-
-                    //var tokenDescriptor = new SecurityTokenDescriptor
-                    //{
-                    //    Subject = new ClaimsIdentity(new Claim[]
-                    //     {
-                    //             new Claim("UserID", loggedInUser.Id.ToString()),
-                    //             new Claim("role",role.FirstOrDefault()),
-                    //     }),
-                    //    Expires = DateTime.UtcNow.AddHours(2),
-                    //    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Value.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
-                    //};
-                    //var tokenHandler = new JwtSecurityTokenHandler();
-                    //var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-                    //var token = tokenHandler.WriteToken(securityToken);
-
-                    //return Ok(new {token});
 
                 }
 

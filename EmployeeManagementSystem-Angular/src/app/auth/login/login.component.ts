@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token',res.token);
         var token = localStorage.getItem('token');
         const payLoad = JSON.parse(window.atob(token.split('.')[1]));
+        //console.log(payLoad);
         localStorage.setItem('UserID',payLoad['UserID']);
         localStorage.setItem('role',payLoad['role']);
         if(localStorage.getItem('role')=='Employee'){
