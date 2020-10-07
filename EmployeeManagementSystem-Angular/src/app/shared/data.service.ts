@@ -11,7 +11,7 @@ import * as signalR from '@aspnet/signalr';
   providedIn: 'root'
 })
 export class DataService {
-  public data: any;
+  public data = new Array();
   private hubConnection: signalR.HubConnection;
   loginToken: string;
   url = 'https://localhost:44318';
@@ -23,18 +23,28 @@ export class DataService {
     this.hubConnection
       .start()
       .then(() => {
-        console.log("Connected");
         this.hubConnection.on('departmentAdded',(data)=>{
-          this.data = data;
+          this.data.push(data);
         });
         this.hubConnection.on('departmentDelete',(data)=>{
-          this.data = data;
+          this.data.push(data);
+        });
+        this.hubConnection.on('employeeUpdate',(data)=>{
+          this.data.push(data);
+        });
+        this.hubConnection.on('addEmployee',(data)=>{
+          this.data.push(data);
         });
       })
       .catch(err => console.log('Error while starting connection: ' + err));
    }
   login(login){
-    return this.http.post(this.url+'/Account/Login',login);
+    return this.http.post(this.url+'/Account/Login',login,{
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json; charset=utf-8',
+        Authorization:'Bearer ' + localStorage.getItem('token')
+      })
+    });
   }
   forgetResetPassword(forgetResetPassowrd:ForgetResetPassword){
     return this.http.post(this.url+'/Account/ForgetResetPassword',forgetResetPassowrd);

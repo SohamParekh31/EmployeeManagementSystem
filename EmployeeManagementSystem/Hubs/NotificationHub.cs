@@ -27,12 +27,12 @@ namespace EmployeeManagementSystem.Hubs
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, "HR");
             }
-            else if (this.Context.User.IsInRole("Employee"))
+            else if (Context.User.IsInRole("Employee"))
             {
                 string dept = _context.employees.Include(e => e.department).Where(e => e.Email == Context.User.Identity.Name).First().department.Name;
                 var grpName = "Employee" + dept;
-                await this.Groups.AddToGroupAsync(Context.ConnectionId, grpName);
-
+                await Groups.AddToGroupAsync(Context.ConnectionId, grpName);
+                await Groups.AddToGroupAsync(Context.ConnectionId, "Employee");
             }
             await base.OnConnectedAsync();
 

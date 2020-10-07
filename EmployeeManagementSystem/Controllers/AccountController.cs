@@ -37,12 +37,6 @@ namespace EmployeeManagementSystem.Controllers
             this.appSettings = appSettings;
             _configuration = configuration;
         }
-        [AllowAnonymous]
-        [Route("chatHub")]
-        public IActionResult post()
-        {
-            return Ok();
-        }
         [HttpGet]
         [Route("Logout")]
         [AllowAnonymous]
@@ -82,12 +76,6 @@ namespace EmployeeManagementSystem.Controllers
             }
             return View(model);
         }
-        //[HttpGet]
-        //[AllowAnonymous]
-        //public IActionResult Login()
-        //{
-        //    return View();
-        //}
         [HttpPost]
         [AllowAnonymous]
         [Route("Login")]
